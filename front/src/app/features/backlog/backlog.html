@@ -1,0 +1,51 @@
+<div class="backlog">
+  <header class="page-header">
+    <div>
+      <h1 class="page-header__title">Backlog</h1>
+      <p class="page-header__subtitle">ReparaYa · Product backlog</p>
+    </div>
+    <button type="button" mat-flat-button (click)="abrirNuevoItem()">
+      <mat-icon>add</mat-icon>
+      Agregar ítem
+    </button>
+  </header>
+
+  <div class="panel">
+    <table mat-table [dataSource]="items()" class="backlog__table">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>Tipo · ID</th>
+        <td mat-cell *matCellDef="let i">{{ i.tipo }} · {{ i.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="tipo">
+        <th mat-header-cell *matHeaderCellDef>Historia de usuario</th>
+        <td mat-cell *matCellDef="let i">{{ i.historiaUsuario }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="prioridad">
+        <th mat-header-cell *matHeaderCellDef>Prioridad</th>
+        <td mat-cell *matCellDef="let i">
+          <span
+            class="badge"
+            [class]="'badge--' + (i.prioridad === 'Alta' ? 'danger' : i.prioridad === 'Media' ? 'warning' : 'success')"
+          >
+            {{ i.prioridad }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="estimacion">
+        <th mat-header-cell *matHeaderCellDef>Estim.</th>
+        <td mat-cell *matCellDef="let i">{{ i.estimacion }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="responsable">
+        <th mat-header-cell *matHeaderCellDef>Responsable</th>
+        <td mat-cell *matCellDef="let i">{{ i.responsables.join(', ') }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  </div>
+</div>

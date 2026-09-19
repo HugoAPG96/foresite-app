@@ -1,0 +1,180 @@
+<div class="paso">
+  <p class="paso__hint">Define quién es Responsable, A cargo, Consultado e Informado por tarea.</p>
+
+  <div class="raci-table-wrap">
+    <table class="raci-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Título de tarea</th>
+          <th>Responsable</th>
+          <th>A cargo</th>
+          <th>Consultado</th>
+          <th>Informado</th>
+          <th>Inicio</th>
+          <th>Fin</th>
+          <th class="raci-table__acciones-head">Acciones</th>
+        </tr>
+      </thead>
+
+      @for (fase of fases(); track fase.nombre; let fi = $index) {
+        <tbody>
+          <tr class="raci-table__fase-row">
+            <td colspan="9">{{ fase.nombre }}</td>
+          </tr>
+
+          @for (tarea of fase.tareas; track tarea.id; let ti = $index) {
+            <tr>
+              <td>{{ tarea.id }}</td>
+
+              @if (tarea.editing) {
+                <td>
+                  <input
+                    class="raci-table__input"
+                    placeholder="Título de la tarea"
+                    [ngModel]="tarea.titulo"
+                    (ngModelChange)="actualizarCampo(fi, ti, 'titulo', $event)"
+                  />
+                </td>
+                <td>
+                  <select
+                    class="raci-table__select"
+                    aria-label="Responsable"
+                    [ngModel]="tarea.responsable"
+                    (ngModelChange)="actualizarCampo(fi, ti, 'responsable', $event)"
+                  >
+                    <option value="">Respo.</option>
+                    @for (integrante of integrantes(); track integrante) {
+                      <option [value]="integrante">{{ integrante }}</option>
+                    }
+                  </select>
+                </td>
+                <td>
+                  <select
+                    class="raci-table__select"
+                    aria-label="A cargo"
+                    [ngModel]="tarea.aCargo"
+                    (ngModelChange)="actualizarCampo(fi, ti, 'aCargo', $event)"
+                  >
+                    <option value="">A cargo</option>
+                    @for (integrante of integrantes(); track integrante) {
+                      <option [value]="integrante">{{ integrante }}</option>
+                    }
+                  </select>
+                </td>
+                <td>
+                  <select
+                    class="raci-table__select"
+                    aria-label="Consultado"
+                    [ngModel]="tarea.consultado"
+                    (ngModelChange)="actualizarCampo(fi, ti, 'consultado', $event)"
+                  >
+                    <option value="">Cons.</option>
+                    @for (integrante of integrantes(); track integrante) {
+                      <option [value]="integrante">{{ integrante }}</option>
+                    }
+                  </select>
+                </td>
+                <td>
+                  <select
+                    class="raci-table__select"
+                    aria-label="Informado"
+                    [ngModel]="tarea.informado"
+                    (ngModelChange)="actualizarCampo(fi, ti, 'informado', $event)"
+                  >
+                    <option value="">Inform.</option>
+                    @for (opcion of opcionesInformado(); track opcion) {
+                      <option [value]="opcion">{{ opcion }}</option>
+                    }
+                  </select>
+                </td>
+                <td>
+                  <input
+                    class="raci-table__input raci-table__input--date"
+                    placeholder="dd/mm"
+                    [ngModel]="tarea.inicio"
+                    (ngModelChange)="actualizarCampo(fi, ti, 'inicio', $event)"
+                  />
+                </td>
+                <td>
+                  <input
+                    class="raci-table__input raci-table__input--date"
+                    placeholder="dd/mm"
+                    [ngModel]="tarea.fin"
+                    (ngModelChange)="actualizarCampo(fi, ti, 'fin', $event)"
+                  />
+                </td>
+                <td class="raci-table__acciones-cell">
+                  <button
+                    type="button"
+                    mat-icon-button
+                    class="raci-table__accion-ok"
+                    [disabled]="!tarea.titulo.trim()"
+                    (click)="confirmarTarea(fi, ti)"
+                    aria-label="Confirmar tarea"
+                  >
+                    <mat-icon>check</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    class="raci-table__accion-eliminar"
+                    (click)="eliminarTarea(fi, ti)"
+                    aria-label="Eliminar tarea"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </td>
+              } @else {
+                <td>{{ tarea.titulo }}</td>
+                <td>{{ tarea.responsable }}</td>
+                <td>{{ tarea.aCargo }}</td>
+                <td>{{ tarea.consultado }}</td>
+                <td>{{ tarea.informado }}</td>
+                <td>{{ tarea.inicio }}</td>
+                <td>{{ tarea.fin }}</td>
+                <td class="raci-table__acciones-cell">
+                  <button type="button" mat-icon-button (click)="editarTarea(fi, ti)" aria-label="Editar tarea">
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    type="button"
+                    mat-icon-button
+                    class="raci-table__accion-eliminar"
+                    (click)="eliminarTarea(fi, ti)"
+                    aria-label="Eliminar tarea"
+                  >
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </td>
+              }
+            </tr>
+          }
+
+          <tr class="raci-table__add-row">
+            <td colspan="9">
+              <button type="button" class="raci-table__add-link" (click)="agregarTarea(fi)">
+                <mat-icon inline>add</mat-icon>
+                Agregar tarea
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      }
+    </table>
+  </div>
+
+  <div class="paso__toolbar">
+    <button type="button" mat-stroked-button (click)="agregarFase()">
+      <mat-icon>add</mat-icon>
+      Agregar fase
+    </button>
+  </div>
+
+  <p class="paso__note">Integrantes precargados del acta · un solo Responsable y un solo A cargo por tarea.</p>
+
+  <div class="paso__actions">
+    <button type="button" mat-stroked-button routerLink="/proyecto/nuevo/acta">Atrás</button>
+    <button type="button" mat-flat-button routerLink="/proyecto/nuevo/backlog">Siguiente</button>
+  </div>
+</div>

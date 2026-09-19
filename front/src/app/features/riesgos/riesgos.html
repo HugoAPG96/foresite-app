@@ -1,0 +1,66 @@
+<div class="riesgos">
+  <header class="page-header">
+    <div>
+      <h1 class="page-header__title">Riesgos</h1>
+      <p class="page-header__subtitle">ReparaYa · Matriz de probabilidad e impacto</p>
+    </div>
+
+    <button type="button" mat-flat-button (click)="agregarRiesgo()">
+      <mat-icon>add</mat-icon>
+      Nuevo riesgo
+    </button>
+  </header>
+
+  <div class="section-grid">
+    <div class="panel">
+      <p class="panel__title">Matriz de probabilidad × impacto</p>
+
+      <div class="risk-matrix">
+        <span class="risk-matrix__axis-y">Impacto</span>
+
+        <div class="risk-matrix__grid">
+          @for (fila of matriz(); track $index) {
+            @for (celda of fila; track $index) {
+              <div class="risk-matrix__cell" [class]="'risk-matrix__cell--' + celda.nivel">
+                @if (celda.cantidad > 0) {
+                  {{ celda.cantidad }}
+                }
+              </div>
+            }
+          }
+        </div>
+
+        <span class="risk-matrix__axis-x">Probabilidad</span>
+      </div>
+
+      <div class="risk-legend">
+        <span class="risk-legend__item"><i class="risk-legend__dot risk-legend__dot--bajo"></i> Bajo</span>
+        <span class="risk-legend__item"><i class="risk-legend__dot risk-legend__dot--medio"></i> Medio</span>
+        <span class="risk-legend__item"><i class="risk-legend__dot risk-legend__dot--alto"></i> Alto</span>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="panel__title">Riesgos activos</p>
+
+      <div class="risk-list">
+        @for (riesgo of riesgos(); track riesgo.id) {
+          <div class="risk-item">
+            <div class="risk-item__header">
+              <span class="risk-item__id">{{ riesgo.id }}</span>
+              <span class="badge" [class]="'badge--' + badgeDe(nivelDe(riesgo.probabilidad, riesgo.impacto))">
+                {{ nivelDe(riesgo.probabilidad, riesgo.impacto) }}
+              </span>
+            </div>
+            <p class="risk-item__desc">{{ riesgo.descripcion }}</p>
+            <p class="risk-item__mitigacion">
+              <mat-icon inline>shield</mat-icon>
+              {{ riesgo.mitigacion }}
+            </p>
+            <p class="risk-item__owner">Responsable: {{ riesgo.responsable }}</p>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

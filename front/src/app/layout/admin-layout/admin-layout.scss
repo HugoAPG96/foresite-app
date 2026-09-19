@@ -1,0 +1,84 @@
+.shell {
+  height: 100vh;
+
+  &__sidenav {
+    width: 260px;
+    display: flex;
+    flex-direction: column;
+    border-right: none;
+    background-color: var(--mat-sys-surface-container-low);
+    padding-top: 0.5rem;
+  }
+
+  &__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 1.5rem 1.5rem;
+  }
+
+  &__brand-icon {
+    color: var(--mat-sys-primary);
+  }
+
+  &__brand-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  &__nav {
+    padding-inline: 0.5rem;
+  }
+
+  &__nav-item {
+    border-radius: 999px;
+    margin-bottom: 0.25rem;
+
+    &--active {
+      background-color: var(--mat-sys-secondary-container);
+      color: var(--mat-sys-on-secondary-container);
+    }
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__topbar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: var(--mat-sys-surface);
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  &__topbar-title {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  &__spacer {
+    flex: 1 1 auto;
+  }
+
+  &__main {
+    flex: 1;
+    padding: 1.5rem 2rem;
+    background-color: var(--mat-sys-surface-container-lowest);
+    min-height: calc(100vh - 64px);
+
+    // Ancho máximo y centrado del contenido: vive aquí porque envuelve
+    // a TODAS las pantallas hijas del router-outlet, no en cada feature.
+    // <router-outlet> es un elemento hermano (no padre) del componente
+    // routeado, por eso apuntamos al elemento que le sigue, no a "*".
+    display: flex;
+    justify-content: center;
+
+    > router-outlet + * {
+      width: 100%;
+      max-width: 1200px;
+    }
+  }
+}

@@ -1,0 +1,139 @@
+<div class="tareas">
+  <header class="page-header">
+    <div>
+      <h1 class="page-header__title">Tareas</h1>
+      <p class="page-header__subtitle">ReparaYa · Sprint 2</p>
+    </div>
+
+    <div class="tareas__header-actions">
+      <mat-button-toggle-group [value]="vista()" (change)="vista.set($event.value)">
+        <mat-button-toggle value="kanban">
+          <mat-icon inline>view_column</mat-icon>
+          Kanban
+        </mat-button-toggle>
+        <mat-button-toggle value="cronograma">
+          <mat-icon inline>event_note</mat-icon>
+          Cronograma
+        </mat-button-toggle>
+      </mat-button-toggle-group>
+
+      <button type="button" mat-flat-button (click)="agregarTarea()">
+        <mat-icon>add</mat-icon>
+        Nueva tarea
+      </button>
+    </div>
+  </header>
+
+  @if (vista() === 'kanban') {
+    <div class="kanban" cdkDropListGroup>
+      <div class="kanban__column">
+        <p class="kanban__column-title">{{ columnas.pendiente }} · {{ pendiente().length }}</p>
+        <div
+          class="kanban__list"
+          id="pendiente"
+          cdkDropList
+          [cdkDropListData]="pendiente()"
+          (cdkDropListDropped)="drop($event)"
+        >
+          @for (tarea of pendiente(); track tarea.id) {
+            <div class="task-card" [class.task-card--vencida]="tarea.vencida" cdkDrag>
+              <span class="badge" [class]="'badge--' + (tarea.prioridad === 'Alta' ? 'danger' : tarea.prioridad === 'Media' ? 'warning' : 'success')">
+                {{ tarea.prioridad }}
+              </span>
+              <p class="task-card__title">{{ tarea.titulo }}</p>
+              <p class="task-card__meta">
+                {{ tarea.responsable }} ·
+                @if (tarea.vencida) {
+                  <span class="task-card__vencida">Vencida · {{ tarea.fechaFin }}</span>
+                } @else {
+                  {{ tarea.fechaFin }}
+                }
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="kanban__column">
+        <p class="kanban__column-title">{{ columnas.progreso }} · {{ progreso().length }}</p>
+        <div
+          class="kanban__list"
+          id="progreso"
+          cdkDropList
+          [cdkDropListData]="progreso()"
+          (cdkDropListDropped)="drop($event)"
+        >
+          @for (tarea of progreso(); track tarea.id) {
+            <div class="task-card" [class.task-card--vencida]="tarea.vencida" cdkDrag>
+              <span class="badge" [class]="'badge--' + (tarea.prioridad === 'Alta' ? 'danger' : tarea.prioridad === 'Media' ? 'warning' : 'success')">
+                {{ tarea.prioridad }}
+              </span>
+              <p class="task-card__title">{{ tarea.titulo }}</p>
+              <p class="task-card__meta">
+                {{ tarea.responsable }} ·
+                @if (tarea.vencida) {
+                  <span class="task-card__vencida">Vencida · {{ tarea.fechaFin }}</span>
+                } @else {
+                  {{ tarea.fechaFin }}
+                }
+              </p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="kanban__column">
+        <p class="kanban__column-title">{{ columnas.completada }} · {{ completada().length }}</p>
+        <div
+          class="kanban__list"
+          id="completada"
+          cdkDropList
+          [cdkDropListData]="completada()"
+          (cdkDropListDropped)="drop($event)"
+        >
+          @for (tarea of completada(); track tarea.id) {
+            <div class="task-card task-card--done" cdkDrag>
+              <span class="badge" [class]="'badge--' + (tarea.prioridad === 'Alta' ? 'danger' : tarea.prioridad === 'Media' ? 'warning' : 'success')">
+                {{ tarea.prioridad }}
+              </span>
+              <p class="task-card__title">{{ tarea.titulo }}</p>
+              <p class="task-card__meta">{{ tarea.responsable }} · {{ tarea.fechaFin }}</p>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  } @else {
+    <div class="panel">
+      <table mat-table [dataSource]="todasLasTareas" class="cronograma-table">
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>ID</th>
+          <td mat-cell *matCellDef="let t">{{ t.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="titulo">
+          <th mat-header-cell *matHeaderCellDef>Tarea</th>
+          <td mat-cell *matCellDef="let t">{{ t.titulo }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="responsable">
+          <th mat-header-cell *matHeaderCellDef>Responsable</th>
+          <td mat-cell *matCellDef="let t">{{ t.responsable }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaInicio">
+          <th mat-header-cell *matHeaderCellDef>Inicio</th>
+          <td mat-cell *matCellDef="let t">{{ t.fechaInicio }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaFin">
+          <th mat-header-cell *matHeaderCellDef>Fin</th>
+          <td mat-cell *matCellDef="let t">{{ t.fechaFin }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="cronogramaColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: cronogramaColumns"></tr>
+      </table>
+    </div>
+  }
+</div>

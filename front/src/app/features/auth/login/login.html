@@ -1,0 +1,33 @@
+<div class="login">
+  <mat-card class="login__card">
+    <mat-card-header>
+      <mat-card-title class="login__title">Iniciar sesión</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content class="login__content">
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="login__form">
+        <mat-form-field appearance="outline">
+          <mat-label>Correo</mat-label>
+          <input matInput type="email" formControlName="email" aria-label="Correo" />
+          @if (form.controls.email.invalid && form.controls.email.touched) {
+            <mat-error>Ingresa un correo válido.</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input matInput type="password" formControlName="password" aria-label="Contraseña" />
+          @if (form.controls.password.invalid && form.controls.password.touched) {
+            <mat-error>Mínimo 6 caracteres.</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" class="login__submit">Ingresar</button>
+      </form>
+
+      <p class="login__footer">
+        ¿No tienes cuenta? <a routerLink="/registro">Regístrate</a>
+      </p>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,63 @@
+.proyectos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--space-4);
+  }
+}
+
+.project-card {
+  display: block;
+  background-color: var(--mat-sys-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-5);
+  text-decoration: none;
+  color: inherit;
+  transition: box-shadow 150ms ease, transform 150ms ease;
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+  }
+
+  &__name {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  &__desc {
+    margin: 0 0 var(--space-4);
+    font-size: 0.875rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__progress {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+
+    mat-progress-bar {
+      flex: 1;
+    }
+  }
+
+  &__progress-value {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}

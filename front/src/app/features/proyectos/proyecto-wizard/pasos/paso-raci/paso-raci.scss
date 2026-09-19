@@ -1,0 +1,109 @@
+.paso {
+  padding-top: var(--space-4);
+
+  &__hint {
+    margin: 0 0 var(--space-4);
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 0.875rem;
+  }
+
+  &__toolbar {
+    margin-top: var(--space-3);
+  }
+
+  &__note {
+    margin: var(--space-2) 0 0;
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+}
+
+.raci-table-wrap {
+  overflow-x: auto;
+}
+
+.raci-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+
+  th {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+    color: var(--mat-sys-on-surface-variant);
+    font-weight: 600;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    white-space: nowrap;
+  }
+
+  td {
+    padding: var(--space-2) var(--space-3);
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+    white-space: nowrap;
+  }
+
+  &__fase-row td {
+    background-color: var(--mat-sys-surface-container-high);
+    font-weight: 600;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__input,
+  &__select {
+    width: 100%;
+    min-width: 90px;
+    border: 1px solid var(--mat-sys-outline-variant);
+    border-radius: var(--radius-sm);
+    padding: var(--space-1) var(--space-2);
+    font: inherit;
+    background-color: var(--mat-sys-surface);
+  }
+
+  &__input--date {
+    min-width: 70px;
+  }
+
+  &__acciones-head {
+    text-align: center;
+  }
+
+  &__acciones-cell {
+    text-align: center;
+    white-space: nowrap;
+
+    .mat-mdc-icon-button {
+      color: var(--mat-sys-on-surface-variant);
+    }
+  }
+
+  &__accion-ok:not(:disabled) mat-icon {
+    color: #22c55e;
+  }
+
+  &__accion-eliminar mat-icon {
+    color: #ef4444;
+  }
+
+  &__add-row td {
+    border-bottom: none;
+  }
+
+  &__add-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    background: none;
+    border: none;
+    color: var(--mat-sys-primary);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    padding: var(--space-1) 0;
+  }
+}

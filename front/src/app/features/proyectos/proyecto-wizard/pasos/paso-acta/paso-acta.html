@@ -1,0 +1,72 @@
+<div class="paso">
+  <p class="paso__hint">Define los datos generales del proyecto.</p>
+
+  <div class="paso__row">
+    <mat-form-field appearance="outline" class="paso__field">
+      <mat-label>Nombre del proyecto</mat-label>
+      <input matInput placeholder="Ej. ReparaYa" />
+    </mat-form-field>
+  </div>
+
+  <div class="paso__row">
+    <mat-form-field appearance="outline" class="paso__field">
+      <mat-label>Objetivo del proyecto</mat-label>
+      <textarea matInput rows="2" placeholder="¿Qué problema resuelve este proyecto?"></textarea>
+    </mat-form-field>
+  </div>
+
+  <div class="paso__row">
+    <mat-form-field appearance="outline" class="paso__field">
+      <mat-label>Alcance</mat-label>
+      <textarea matInput rows="2" placeholder="¿Qué incluye y qué no incluye?"></textarea>
+    </mat-form-field>
+  </div>
+
+  <div class="paso__row paso__row--split">
+    <mat-form-field appearance="outline" class="paso__field">
+      <mat-label>Fecha de inicio</mat-label>
+      <input matInput [matDatepicker]="inicio" aria-label="Fecha de inicio" />
+      <mat-datepicker-toggle matIconSuffix [for]="inicio" />
+      <mat-datepicker #inicio />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="paso__field">
+      <mat-label>Fecha límite</mat-label>
+      <input matInput [matDatepicker]="fin" aria-label="Fecha límite" />
+      <mat-datepicker-toggle matIconSuffix [for]="fin" />
+      <mat-datepicker #fin />
+    </mat-form-field>
+  </div>
+
+  <div class="paso__row">
+    <p class="paso__label">Integrantes del equipo</p>
+    <mat-chip-set>
+      @for (integrante of integrantes(); track integrante) {
+        <mat-chip>
+          <mat-icon matChipAvatar>person</mat-icon>
+          {{ integrante }}
+        </mat-chip>
+      }
+      @if (agregandoIntegrante()) {
+        <mat-form-field appearance="outline" class="paso__inline-add">
+          <input
+            matInput
+            placeholder="Nombre"
+            [ngModel]="nuevoIntegrante()"
+            (ngModelChange)="nuevoIntegrante.set($event)"
+            (keydown.enter)="confirmarIntegrante()"
+            (blur)="confirmarIntegrante()"
+          />
+        </mat-form-field>
+      } @else {
+        <button type="button" mat-stroked-button class="paso__add-chip" (click)="mostrarInputIntegrante()">
+          + agregar
+        </button>
+      }
+    </mat-chip-set>
+  </div>
+
+  <div class="paso__actions">
+    <button type="button" mat-flat-button routerLink="/proyecto/nuevo/raci">Siguiente</button>
+  </div>
+</div>
