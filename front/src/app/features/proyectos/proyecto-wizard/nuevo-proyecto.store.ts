@@ -1,4 +1,16 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { persistedSignal } from '../../../core/storage/persisted-signal';
+import { ProyectosStore } from '../proyectos.store';
+
+export interface ActaDraft {
+  nombre: string;
+  objetivo: string;
+  alcance: string;
+  fechaInicio: string | null;
+  fechaLimite: string | null;
+}
+
+const ACTA_VACIA: ActaDraft = { nombre: '', objetivo: '', alcance: '', fechaInicio: null, fechaLimite: null };
 
 export interface TareaRaci {
   id: string;
@@ -45,11 +57,33 @@ const FASES_MOCK: FaseRaci[] = [
 // enviaría al backend como el proyecto recién creado.
 @Injectable({ providedIn: 'root' })
 export class NuevoProyectoStore {
-  private readonly _integrantes = signal<string[]>(INTEGRANTES_MOCK);
-  private readonly _fases = signal<FaseRaci[]>(FASES_MOCK);
+  private readonly proyectosStore = inject(ProyectosStore);
 
+  private readonly _acta = persistedSignal<ActaDraft>('wizard:acta', ACTA_VACIA);
+  private readonly _integrantes = persistedSignal<string[]>('wizard:integrantes', INTEGRANTES_MOCK);
+  private readonly _fases = persistedSignal<FaseRaci[]>('wizard:fases', FASES_MOCK);
+
+  readonly acta = this._acta.asReadonly();
   readonly integrantes = this._integrantes.asReadonly();
   readonly fases = this._fases.asReadonly();
+
+  actualizarActa(cambios: Partial<ActaDraft>) {
+    this._acta.set({ ...this._acta(), ...cambios });
+  }
+
+  // Convierte el borrador del wizard en un proyecto de "Mis Proyectos" y
+  // limpia el Acta para que el próximo proyecto empiece en blanco.
+  // Con backend, aquí va el POST /proyectos con acta + fases + backlog.
+  finalizar() {
+    const { nombre, objetivo } = this._acta();
+    this.proyectosStore.agregar({
+      nombre: nombre.trim() || 'Nuevo proyecto',
+      descripcion: objetivo.trim() || 'Sin objetivo definido',
+      avance: 0,
+      estado: 'verde',
+    });
+    this._acta.set(ACTA_VACIA);
+  }
 
   agregarIntegrante(nombre: string) {
     const limpio = nombre.trim();

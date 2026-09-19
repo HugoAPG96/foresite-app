@@ -1,4 +1,5 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable } from '@angular/core';
+import { persistedSignal } from '../../core/storage/persisted-signal';
 import { CeldaMatriz, nivelDe, Riesgo } from './riesgo.model';
 
 const RIESGOS_MOCK: Riesgo[] = [
@@ -38,7 +39,7 @@ const RIESGOS_MOCK: Riesgo[] = [
 
 @Injectable({ providedIn: 'root' })
 export class RiesgosStore {
-  private readonly _riesgos = signal<Riesgo[]>(RIESGOS_MOCK);
+  private readonly _riesgos = persistedSignal<Riesgo[]>('riesgos', RIESGOS_MOCK);
 
   readonly riesgos = this._riesgos.asReadonly();
 

@@ -1,5 +1,6 @@
-import { Injectable, signal, WritableSignal } from '@angular/core';
+import { Injectable, WritableSignal } from '@angular/core';
 import { moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { persistedSignal } from '../../core/storage/persisted-signal';
 import { ColumnaTarea, Tarea } from './tarea.model';
 
 // Mock por ahora — cuando exista el endpoint de tareas de Miguel, esto pasa
@@ -23,9 +24,9 @@ const COMPLETADA_MOCK: Tarea[] = [
 
 @Injectable({ providedIn: 'root' })
 export class TareasStore {
-  private readonly _pendiente = signal<Tarea[]>(PENDIENTE_MOCK);
-  private readonly _progreso = signal<Tarea[]>(PROGRESO_MOCK);
-  private readonly _completada = signal<Tarea[]>(COMPLETADA_MOCK);
+  private readonly _pendiente = persistedSignal<Tarea[]>('tareas:pendiente', PENDIENTE_MOCK);
+  private readonly _progreso = persistedSignal<Tarea[]>('tareas:progreso', PROGRESO_MOCK);
+  private readonly _completada = persistedSignal<Tarea[]>('tareas:completada', COMPLETADA_MOCK);
 
   readonly pendiente = this._pendiente.asReadonly();
   readonly progreso = this._progreso.asReadonly();

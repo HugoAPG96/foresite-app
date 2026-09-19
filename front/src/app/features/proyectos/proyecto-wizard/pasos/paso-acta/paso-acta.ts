@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,6 +30,24 @@ export class PasoActa {
   private store = inject(NuevoProyectoStore);
 
   integrantes = this.store.integrantes;
+  acta = this.store.acta;
+
+  actualizar(campo: 'nombre' | 'objetivo' | 'alcance', valor: string) {
+    this.store.actualizarActa({ [campo]: valor });
+  }
+
+  // El store guarda fechas como ISO string (para poder ir a localStorage);
+  // el datepicker trabaja con Date, así que se convierte en la frontera.
+  fechaInicio = computed(() => this.aDate(this.acta().fechaInicio));
+  fechaLimite = computed(() => this.aDate(this.acta().fechaLimite));
+
+  private aDate(iso: string | null): Date | null {
+    return iso ? new Date(iso) : null;
+  }
+
+  actualizarFecha(campo: 'fechaInicio' | 'fechaLimite', valor: Date | null) {
+    this.store.actualizarActa({ [campo]: valor ? valor.toISOString() : null });
+  }
 
   agregandoIntegrante = signal(false);
   nuevoIntegrante = signal('');

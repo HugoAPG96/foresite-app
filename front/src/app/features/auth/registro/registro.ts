@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -14,6 +14,7 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class Registro {
   private fb = inject(FormBuilder);
+  private router = inject(Router);
 
   form = this.fb.group({
     nombre: ['', [Validators.required, Validators.minLength(2)]],
@@ -27,6 +28,6 @@ export class Registro {
       return;
     }
 
-    console.log(this.form.value);
+    this.router.navigate(['/proyectos']);
   }
 }

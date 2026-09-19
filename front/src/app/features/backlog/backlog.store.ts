@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { persistedSignal } from '../../core/storage/persisted-signal';
 import { ItemBacklog, ItemBacklogForm, TipoBacklog } from './backlog-item.model';
 
 const PREFIJOS: Record<TipoBacklog, string> = {
@@ -31,7 +32,7 @@ const ITEMS_MOCK: ItemBacklog[] = [
 // después de crear el proyecto (es su propia pantalla en el sidebar).
 @Injectable({ providedIn: 'root' })
 export class BacklogStore {
-  private readonly _items = signal<ItemBacklog[]>(ITEMS_MOCK);
+  private readonly _items = persistedSignal<ItemBacklog[]>('backlog', ITEMS_MOCK);
 
   readonly items = this._items.asReadonly();
 

@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
@@ -18,10 +18,16 @@ export class PasoBacklog {
   private dialog = inject(MatDialog);
   private proyectoStore = inject(NuevoProyectoStore);
   private backlogStore = inject(BacklogStore);
+  private router = inject(Router);
 
   columns = ['id', 'tipo', 'titulo', 'prioridad', 'estimacion', 'responsable'];
 
   items = this.backlogStore.items;
+
+  finalizar() {
+    this.proyectoStore.finalizar();
+    this.router.navigate(['/proyectos']);
+  }
 
   abrirNuevoItem() {
     const ref = this.dialog.open(ItemDialog, {

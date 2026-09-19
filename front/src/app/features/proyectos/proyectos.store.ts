@@ -1,4 +1,5 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable } from '@angular/core';
+import { persistedSignal } from '../../core/storage/persisted-signal';
 import { Proyecto } from './proyecto.model';
 
 // Hoy la data es mock. Cuando el backend (NestJS) esté listo, este es el
@@ -13,7 +14,11 @@ const PROYECTOS_MOCK: Proyecto[] = [
 
 @Injectable({ providedIn: 'root' })
 export class ProyectosStore {
-  private readonly _proyectos = signal<Proyecto[]>(PROYECTOS_MOCK);
+  private readonly _proyectos = persistedSignal<Proyecto[]>('proyectos', PROYECTOS_MOCK);
 
   readonly proyectos = this._proyectos.asReadonly();
+
+  agregar(proyecto: Proyecto) {
+    this._proyectos.set([...this._proyectos(), proyecto]);
+  }
 }
