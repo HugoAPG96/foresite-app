@@ -1,0 +1,126 @@
+' ==========================================================
+' Foresite — Diagramas de secuencia
+' Este archivo agrupa varios diagramas de secuencia del proyecto.
+' Por ahora: 1) Login  2) Wizard de onboarding (Acta -> RACI -> Backlog)
+' Se irán agregando más (crear tarea, registrar riesgo, generar reporte, etc.)
+' ==========================================================
+
+@startuml Foresite_Secuencia_Login
+
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 12
+skinparam ArrowColor #555555
+skinparam ArrowThickness 1.2
+
+skinparam sequence {
+  ActorBorderColor #444444
+  ActorBackgroundColor #F4F6F8
+  ParticipantBorderColor #3E6CB5
+  ParticipantBackgroundColor #EAF2FF
+  ParticipantFontColor #1B3A66
+  LifeLineBorderColor #9AA5B1
+  LifeLineBackgroundColor #F4F6F8
+  DatabaseBorderColor #C0392B
+  DatabaseBackgroundColor #FDEDEA
+}
+
+title Login
+
+actor "Usuario" as user
+participant "Angular SPA" as spa
+participant "AuthController" as ctrl
+participant "AuthService" as svc
+participant "UsersService" as users
+database "PostgreSQL" as db
+
+user -> spa : Ingresa correo y contraseña
+spa -> ctrl : POST /auth/login
+ctrl -> svc : login(dto)
+svc -> users : findByEmail(email)
+users -> db : SELECT * FROM users WHERE email = ?
+db --> users : usuario (password_hash)
+users --> svc : usuario
+
+alt credenciales inválidas
+  svc --> ctrl : 401 Unauthorized
+  ctrl --> spa : 401 Unauthorized
+  spa --> user : Muestra error de login
+else credenciales correctas
+  svc -> svc : bcrypt.compare(password, password_hash)
+  svc -> svc : jwtService.sign({sub, email})
+  svc --> ctrl : { accessToken }
+  ctrl --> spa : 200 OK { accessToken }
+  spa -> spa : Guarda el JWT (memoria / storage)
+  spa --> user : Redirige a Lista de proyectos
+end
+
+@enduml
+
+
+@startuml Foresite_Secuencia_Wizard_Onboarding
+
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 12
+skinparam ArrowColor #555555
+skinparam ArrowThickness 1.2
+
+skinparam sequence {
+  ActorBorderColor #444444
+  ActorBackgroundColor #F4F6F8
+  ParticipantBorderColor #3E6CB5
+  ParticipantBackgroundColor #EAF2FF
+  ParticipantFontColor #1B3A66
+  LifeLineBorderColor #9AA5B1
+  LifeLineBackgroundColor #F4F6F8
+  DatabaseBorderColor #C0392B
+  DatabaseBackgroundColor #FDEDEA
+}
+
+title Wizard de onboarding — Acta → RACI → Backlog → Dashboard
+
+actor "Usuario" as user
+participant "Angular SPA\n(Wizard)" as spa
+participant "ProjectsController" as projCtrl
+participant "TasksController" as taskCtrl
+participant "BacklogController" as backCtrl
+database "PostgreSQL" as db
+
+== Paso 1 · Acta de constitución ==
+user -> spa : Completa nombre, objetivo,\nalcance, fechas, integrantes
+spa -> projCtrl : POST /projects
+projCtrl -> db : INSERT INTO projects (...)
+db --> projCtrl : proyecto creado (id)
+projCtrl --> spa : 201 Created { projectId }
+
+== Paso 2 · Cronograma RACI ==
+loop por cada tarea agregada
+  user -> spa : Agrega tarea a una fase\n(responsable, a cargo, fechas)
+  spa -> taskCtrl : POST /projects/:projectId/tasks
+  taskCtrl -> db : INSERT INTO tasks (...)
+  db --> taskCtrl : tarea creada
+  taskCtrl --> spa : 201 Created
+end
+
+== Paso 3 · Product backlog ==
+loop por cada ítem agregado
+  user -> spa : Agrega ítem (tipo, HU,\nprioridad, responsables múltiples)
+  spa -> backCtrl : POST /projects/:projectId/backlog
+  backCtrl -> db : INSERT INTO backlog_items (...)
+  backCtrl -> db : INSERT INTO backlog_item_responsables (...)
+  db --> backCtrl : ítem creado
+  backCtrl --> spa : 201 Created
+end
+
+== Paso 4 · Confirmación ==
+user -> spa : Finalizar
+spa -> projCtrl : GET /projects/:projectId
+projCtrl -> db : SELECT datos del dashboard
+db --> projCtrl : proyecto + métricas base
+projCtrl --> spa : 200 OK
+spa --> user : Redirige al Dashboard del proyecto
+
+@enduml

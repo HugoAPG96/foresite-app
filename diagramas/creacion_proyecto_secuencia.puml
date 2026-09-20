@@ -1,0 +1,157 @@
+' ==========================================================
+' Foresite — Diagramas de secuencia
+' Este archivo agrupa varios diagramas de secuencia del proyecto.
+' Por ahora: 1) Login  2) Wizard de onboarding (Acta -> RACI -> Backlog)
+' Se irán agregando más (crear tarea, registrar riesgo, generar reporte, etc.)
+' ==========================================================
+
+@startuml Foresite_Secuencia_Wizard_Onboarding
+
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 12
+skinparam ArrowColor #555555
+skinparam ArrowThickness 1.2
+
+skinparam sequence {
+  ActorBorderColor #444444
+  ActorBackgroundColor #F4F6F8
+  ParticipantBorderColor #3E6CB5
+  ParticipantBackgroundColor #EAF2FF
+  ParticipantFontColor #1B3A66
+  LifeLineBorderColor #9AA5B1
+  LifeLineBackgroundColor #F4F6F8
+  DatabaseBorderColor #C0392B
+  DatabaseBackgroundColor #FDEDEA
+}
+
+title Wizard de onboarding — Acta → RACI → Backlog → Dashboard
+
+actor "Usuario" as user
+participant "Angular SPA\n(Wizard)" as spa
+participant "ProjectsController" as projCtrl
+participant "TasksController" as taskCtrl
+participant "BacklogController" as backCtrl
+database "PostgreSQL" as db
+
+== Paso 1 · Acta de constitución ==
+user -> spa : Completa nombre, objetivo,\nalcance, fechas, integrantes
+spa -> projCtrl : POST /projects
+projCtrl -> db : INSERT INTO projects (...)
+db --> projCtrl : proyecto creado (id)
+projCtrl --> spa : 201 Created { projectId }
+
+== Paso 2 · Cronograma RACI ==
+loop por cada tarea agregada
+  user -> spa : Agrega tarea a una fase\n(responsable, a cargo, fechas)
+  spa -> taskCtrl : POST /projects/:projectId/tasks
+  taskCtrl -> db : INSERT INTO tasks (...)
+  db --> taskCtrl : tarea creada
+  taskCtrl --> spa : 201 Created
+end
+
+== Paso 3 · Product backlog ==
+loop por cada ítem agregado
+  user -> spa : Agrega ítem (tipo, HU,\nprioridad, responsables múltiples)
+  spa -> backCtrl : POST /projects/:projectId/backlog
+  backCtrl -> db : INSERT INTO backlog_items (...)
+  backCtrl -> db : INSERT INTO backlog_item_responsables (...)
+  db --> backCtrl : ítem creado
+  backCtrl --> spa : 201 Created
+end
+
+== Paso 4 · Confirmación ==
+user -> spa : Finalizar
+spa -> projCtrl : GET /projects/:projectId
+projCtrl -> db : SELECT datos del dashboard
+db --> projCtrl : proyecto + métricas base
+projCtrl --> spa : 200 OK
+spa --> user : Redirige al Dashboard del proyecto
+
+@enduml
+
+
+@startuml Foresite_Secuencia_Creacion_Proyecto
+
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 12
+skinparam ArrowColor #555555
+skinparam ArrowThickness 1.2
+
+skinparam sequence {
+  ActorBorderColor #444444
+  ActorBackgroundColor #F4F6F8
+  ParticipantBorderColor #3E6CB5
+  ParticipantBackgroundColor #EAF2FF
+  ParticipantFontColor #1B3A66
+  LifeLineBorderColor #9AA5B1
+  LifeLineBackgroundColor #F4F6F8
+  DatabaseBorderColor #C0392B
+  DatabaseBackgroundColor #FDEDEA
+}
+
+title Creación de proyecto — Acta → RACI → Backlog → Confirmación
+
+actor "Usuario" as user
+participant "Angular SPA\n(Wizard)" as spa
+participant "ProjectsController" as projCtrl
+participant "ProjectsService" as projSvc
+participant "TasksController" as taskCtrl
+participant "TasksService" as taskSvc
+participant "BacklogController" as backCtrl
+participant "BacklogService" as backSvc
+database "PostgreSQL" as db
+
+== Paso 1 · Acta de constitución ==
+user -> spa : Nombre, objetivo, alcance,\nfecha inicio, fecha límite, integrantes
+spa -> projCtrl : POST /projects
+projCtrl -> projSvc : create(dto, userId)
+projSvc -> db : INSERT INTO projects (...)
+db --> projSvc : proyecto creado (id)
+projSvc --> projCtrl : proyecto
+projCtrl --> spa : 201 Created { projectId }
+spa --> user : Habilita Paso 2 con integrantes precargados
+
+== Paso 2 · Cronograma RACI ==
+loop por cada fase / tarea agregada
+  user -> spa : Título, responsable, a cargo,\nconsultado, informado, fechas
+  spa -> spa : Valida 1 solo "A cargo"\ny al menos 1 "Responsable"
+  spa -> taskCtrl : POST /projects/:projectId/tasks
+  taskCtrl -> taskSvc : create(projectId, code, dto)
+  taskSvc -> taskSvc : calculateDurationDays(inicio, fin)
+  taskSvc -> db : INSERT INTO tasks (...)
+  db --> taskSvc : tarea creada
+  taskSvc --> taskCtrl : tarea
+  taskCtrl --> spa : 201 Created
+end
+spa --> user : Habilita Paso 3
+
+== Paso 3 · Product backlog ==
+loop por cada ítem agregado
+  user -> spa : Tipo (HU/Spike/Bug/Enabler),\nprioridad, responsables múltiples, sprint
+  spa -> backCtrl : POST /projects/:projectId/backlog
+  backCtrl -> backSvc : create(projectId, code, dto)
+  backSvc -> db : INSERT INTO backlog_items (...)
+  loop por cada responsable
+    backSvc -> db : INSERT INTO backlog_item_responsables (...)
+  end
+  db --> backSvc : ítem creado
+  backSvc --> backCtrl : ítem
+  backCtrl --> spa : 201 Created
+end
+spa --> user : Habilita Paso 4
+
+== Paso 4 · Confirmación ==
+user -> spa : Finalizar
+spa -> projCtrl : GET /projects/:projectId
+projCtrl -> projSvc : findOne(projectId)
+projSvc -> db : SELECT proyecto + tareas + backlog + riesgos
+db --> projSvc : datos consolidados
+projSvc --> projCtrl : dashboard base
+projCtrl --> spa : 200 OK
+spa --> user : Redirige al Dashboard del proyecto\ncon semáforo y Health Score iniciales
+
+@enduml
