@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "outputDirectory": "dist/foresite",
+  "outputDirectory": "dist/foresite/browser",
   "rewrites": [
     {
       "source": "/(.*)",
