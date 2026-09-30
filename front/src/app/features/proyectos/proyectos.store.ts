@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { API_BASE_URL, MOCK_MODE } from '../../core/config/api.config';
@@ -26,6 +26,18 @@ export class ProyectosStore {
   readonly proyectos = this._proyectos.asReadonly();
   readonly loading = this._loading.asReadonly();
   readonly error = this._error.asReadonly();
+
+  // Id del proyecto "activo" (dentro del cual está navegando el usuario).
+  // Lo setea `ProyectoContexto` a partir de la URL — no se persiste porque
+  // la URL ya es la fuente de verdad en cada carga.
+  private readonly _proyectoActualId = signal<string | null>(null);
+  readonly proyectoActual = computed(() =>
+    this._proyectos().find(p => p.id === this._proyectoActualId()) ?? null,
+  );
+
+  seleccionar(id: string | null): void {
+    this._proyectoActualId.set(id);
+  }
 
   async load(): Promise<void> {
     if (MOCK_MODE) {

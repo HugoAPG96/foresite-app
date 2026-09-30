@@ -15,11 +15,18 @@ export const routes: Routes = [
     children: [
       { path: 'proyecto/nuevo', loadChildren: () => import('./features/proyectos/proyecto-wizard/proyecto-wizard.routes').then(m => m.PROYECTO_WIZARD_ROUTES) },
       { path: 'proyectos', loadComponent: () => import('./features/proyectos/proyectos-list/proyectos-list').then(m => m.ProyectosList) },
-      { path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard) },
-      { path: 'tareas', loadComponent: () => import('./features/tareas/tareas').then(m => m.Tareas) },
-      { path: 'backlog', loadComponent: () => import('./features/backlog/backlog').then(m => m.Backlog) },
-      { path: 'riesgos', loadComponent: () => import('./features/riesgos/riesgos').then(m => m.Riesgos) },
-      { path: 'reportes', loadComponent: () => import('./features/reportes/reportes').then(m => m.Reportes) },
+      {
+        path: 'proyectos/:id',
+        loadComponent: () => import('./features/proyectos/proyecto-contexto/proyecto-contexto').then(m => m.ProyectoContexto),
+        children: [
+          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+          { path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard) },
+          { path: 'tareas', loadComponent: () => import('./features/tareas/tareas').then(m => m.Tareas) },
+          { path: 'backlog', loadComponent: () => import('./features/backlog/backlog').then(m => m.Backlog) },
+          { path: 'riesgos', loadComponent: () => import('./features/riesgos/riesgos').then(m => m.Riesgos) },
+          { path: 'reportes', loadComponent: () => import('./features/reportes/reportes').then(m => m.Reportes) },
+        ],
+      },
     ],
   },
 ];

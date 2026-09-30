@@ -20,7 +20,7 @@
 
   <div class="proyectos__grid">
     @for (proyecto of proyectos(); track proyecto.id) {
-      <a class="project-card" routerLink="/dashboard">
+      <a class="project-card" [routerLink]="['/proyectos', proyecto.id]">
         <div class="project-card__header">
           <p class="project-card__name">{{ proyecto.nombre }}</p>
           <span class="badge" [class]="'badge--' + (proyecto.estado === 'verde' ? 'success' : 'warning')">

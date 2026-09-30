@@ -6,7 +6,7 @@
     </div>
 
     <mat-nav-list class="shell__nav">
-      @for (item of navItems; track item.path) {
+      @for (item of navItems(); track item.path) {
         <a
           mat-list-item
           [routerLink]="item.path"
@@ -22,7 +22,7 @@
 
   <mat-sidenav-content class="shell__content">
     <mat-toolbar class="shell__topbar">
-      <span class="shell__topbar-title">ReparaYa</span>
+      <span class="shell__topbar-title">{{ toolbarTitle() }}</span>
 
       @if (mockMode) {
         <span class="shell__mock-badge" title="Auth y Proyectos usan datos locales, no el backend real">
