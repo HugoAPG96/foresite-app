@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Project } from './entities/project.entity';
+import { ProjectMember } from './entities/project-member.entity';
 import { CreateProjectDto } from './dto/create-project.dto';
 
 @Injectable()
@@ -9,17 +10,51 @@ export class ProjectsService {
   constructor(
     @InjectRepository(Project)
     private readonly projectsRepository: Repository<Project>,
+    @InjectRepository(ProjectMember)
+    private readonly membersRepository: Repository<ProjectMember>,
   ) {}
 
-  findAllByUser(userId: string) {
-    // MVP: se filtrará por project_members cuando exista esa tabla puente.
-    return this.projectsRepository.find({ where: { createdBy: userId } });
+  async findAllByUser(userId: string): Promise<Project[]> {
+    const owned = await this.projectsRepository.find({ where: { createdBy: userId } });
+    const memberships = await this.membersRepository.find({ where: { userId } });
+    const memberProjectIds = memberships
+      .map(m => m.projectId)
+      .filter(id => !owned.some(p => p.id === id));
+
+    if (memberProjectIds.length === 0) return owned;
+
+    const memberProjects = await this.projectsRepository.findBy({ id: In(memberProjectIds) });
+    return [...owned, ...memberProjects];
   }
 
-  async findOne(id: string, userId: string) {
-    const project = await this.projectsRepository.findOne({ where: { id } });
-    if (!project || project.createdBy !== userId) {
+  findOne(id: string, userId: string) {
+    return this.assertAccess(id, userId);
+  }
+
+  /** Dueño o miembro del proyecto. Lanza 404 (no 403) para no filtrar existencia. */
+  async assertAccess(projectId: string, userId: string): Promise<Project> {
+    const project = await this.projectsRepository.findOne({ where: { id: projectId } });
+    if (!project) {
       throw new NotFoundException('Proyecto no encontrado');
+    }
+    if (project.createdBy === userId) {
+      return project;
+    }
+    const membership = await this.membersRepository.findOne({ where: { projectId, userId } });
+    if (!membership) {
+      throw new NotFoundException('Proyecto no encontrado');
+    }
+    return project;
+  }
+
+  /** Solo el creador — usado para agregar miembros. */
+  async assertOwner(projectId: string, userId: string): Promise<Project> {
+    const project = await this.projectsRepository.findOne({ where: { id: projectId } });
+    if (!project) {
+      throw new NotFoundException('Proyecto no encontrado');
+    }
+    if (project.createdBy !== userId) {
+      throw new ForbiddenException('Solo el creador del proyecto puede agregar miembros');
     }
     return project;
   }

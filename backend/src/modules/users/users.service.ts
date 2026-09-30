@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -25,5 +26,10 @@ export class UsersService {
     user.id = crypto.randomUUID();
     console.log(`create-user:${user.id}`);
     return this.usersRepository.save(user);
+  }
+
+  async update(id: string, dto: UpdateUserDto) {
+    await this.usersRepository.update({ id }, { name: dto.name });
+    return this.findById(id);
   }
 }

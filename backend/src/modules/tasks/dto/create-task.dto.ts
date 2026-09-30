@@ -1,10 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsOptional, IsString, IsUUID } from 'class-validator';
+import { IsDateString, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
+import { TaskPriority } from '../entities/task.entity';
 
 export class CreateTaskDto {
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsUUID()
-  phaseId: string;
+  phaseId?: string;
 
   @ApiProperty({ required: false, description: 'Ítem del backlog que origina esta tarea' })
   @IsOptional()
@@ -19,9 +21,15 @@ export class CreateTaskDto {
   @IsUUID()
   responsibleId: string;
 
-  @ApiProperty()
+  @ApiProperty({ required: false })
+  @IsOptional()
   @IsUUID()
-  accountableId: string;
+  accountableId?: string;
+
+  @ApiProperty({ required: false, enum: TaskPriority })
+  @IsOptional()
+  @IsEnum(TaskPriority)
+  priority?: TaskPriority;
 
   @ApiProperty({ example: '2026-09-28' })
   @IsDateString()

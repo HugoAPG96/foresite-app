@@ -6,6 +6,12 @@ export enum TaskStatus {
   COMPLETADA = 'completada',
 }
 
+export enum TaskPriority {
+  ALTA = 'alta',
+  MEDIA = 'media',
+  BAJA = 'baja',
+}
+
 @Entity('tasks')
 export class Task {
   @PrimaryGeneratedColumn('uuid')
@@ -14,14 +20,14 @@ export class Task {
   @Column({ name: 'project_id', type: 'uuid' })
   projectId: string;
 
-  @Column({ name: 'phase_id', type: 'uuid' })
-  phaseId: string;
+  @Column({ name: 'phase_id', type: 'uuid', nullable: true })
+  phaseId: string | null;
 
   @Column({ name: 'backlog_item_id', type: 'uuid', nullable: true })
   backlogItemId: string | null;
 
   @Column({ length: 10 })
-  code: string; // ej: "3.1"
+  code: string; // ej: "HU-01"
 
   @Column({ length: 160 })
   title: string;
@@ -29,8 +35,8 @@ export class Task {
   @Column({ name: 'responsible_id', type: 'uuid' })
   responsibleId: string;
 
-  @Column({ name: 'accountable_id', type: 'uuid' })
-  accountableId: string;
+  @Column({ name: 'accountable_id', type: 'uuid', nullable: true })
+  accountableId: string | null;
 
   @Column({ name: 'start_date', type: 'date' })
   startDate: string;
@@ -46,6 +52,9 @@ export class Task {
 
   @Column({ type: 'enum', enum: TaskStatus, default: TaskStatus.PENDIENTE })
   status: TaskStatus;
+
+  @Column({ type: 'enum', enum: TaskPriority, default: TaskPriority.MEDIA })
+  priority: TaskPriority;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
