@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { AuthStore } from '../../features/auth/auth.store';
+import { MOCK_MODE } from '../../core/config/api.config';
 
 @Component({
   selector: 'app-admin-layout',
@@ -27,6 +28,8 @@ import { AuthStore } from '../../features/auth/auth.store';
 export class AdminLayout {
   private authStore = inject(AuthStore);
   private router = inject(Router);
+
+  mockMode = MOCK_MODE;
 
   navItems = [
     { path: '/proyectos', icon: 'folder_open', label: 'Proyectos' },

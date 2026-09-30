@@ -59,6 +59,16 @@
     font-weight: 500;
   }
 
+  &__mock-badge {
+    margin-left: 1rem;
+    padding: 0.15rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background-color: var(--mat-sys-error-container);
+    color: var(--mat-sys-on-error-container);
+  }
+
   &__spacer {
     flex: 1 1 auto;
   }

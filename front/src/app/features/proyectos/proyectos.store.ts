@@ -1,12 +1,23 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { API_BASE_URL } from '../../core/config/api.config';
+import { API_BASE_URL, MOCK_MODE } from '../../core/config/api.config';
+import { persistedSignal } from '../../core/storage/persisted-signal';
 import { CreateProyectoPayload, mapProyectoFromApi, ProjectApiResponse, Proyecto } from './proyecto.model';
+
+const PROYECTOS_MOCK: Proyecto[] = [
+  { id: 'mock-1', nombre: 'ReparaYa', descripcion: 'Plataforma de solicitudes de mantenimiento', avance: 62, estado: 'ambar' },
+  { id: 'mock-2', nombre: 'App de delivery UNI', descripcion: 'Pedidos internos entre facultades', avance: 88, estado: 'verde' },
+  { id: 'mock-3', nombre: 'Portal de matrículas', descripcion: 'Rediseño del flujo de matrícula online', avance: 34, estado: 'ambar' },
+];
 
 @Injectable({ providedIn: 'root' })
 export class ProyectosStore {
   private readonly http = inject(HttpClient);
+
+  // Solo se usa en MOCK_MODE, para que los proyectos "creados" sobrevivan a un
+  // reload mientras no hay backend. Con backend real, no se toca.
+  private readonly _proyectosMock = persistedSignal<Proyecto[]>('proyectos:mock', PROYECTOS_MOCK);
 
   private readonly _proyectos = signal<Proyecto[]>([]);
   private readonly _loading = signal(false);
@@ -17,6 +28,11 @@ export class ProyectosStore {
   readonly error = this._error.asReadonly();
 
   async load(): Promise<void> {
+    if (MOCK_MODE) {
+      this._proyectos.set(this._proyectosMock());
+      return;
+    }
+
     this._loading.set(true);
     this._error.set(null);
     try {
@@ -32,6 +48,19 @@ export class ProyectosStore {
   }
 
   async crear(payload: CreateProyectoPayload): Promise<boolean> {
+    if (MOCK_MODE) {
+      const nuevo: Proyecto = {
+        id: crypto.randomUUID(),
+        nombre: payload.name,
+        descripcion: payload.objective ?? '',
+        avance: 0,
+        estado: 'verde',
+      };
+      this._proyectosMock.set([...this._proyectosMock(), nuevo]);
+      this._proyectos.set(this._proyectosMock());
+      return true;
+    }
+
     this._error.set(null);
     try {
       const res = await firstValueFrom(
