@@ -26,6 +26,9 @@ export class ProjectsService {
 
   create(dto: CreateProjectDto, userId: string) {
     const project = this.projectsRepository.create({ ...dto, createdBy: userId });
+    // La tabla `projects` no genera el id por default (columna sin DEFAULT
+    // en el DDL), igual que `users` — se genera acá, no en la base.
+    project.id = crypto.randomUUID();
     return this.projectsRepository.save(project);
   }
 
