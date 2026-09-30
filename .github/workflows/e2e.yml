@@ -20,6 +20,10 @@ jobs:
         with:
           node-version: 20
 
+      - name: Enable mock mode for CI
+        working-directory: front
+        run: sed -i "s/MOCK_MODE = false/MOCK_MODE = true/" src/app/core/config/api.config.ts
+
       - name: Install frontend deps
         working-directory: front
         run: npm ci
@@ -34,7 +38,7 @@ jobs:
 
       - name: Run E2E tests
         working-directory: e2e
-        run: npm run test:e2e
+        run: npx playwright test
 
       - name: Upload Playwright report
         if: always()
