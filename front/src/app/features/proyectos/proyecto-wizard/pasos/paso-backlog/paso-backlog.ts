@@ -5,6 +5,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { NuevoProyectoStore } from '../../nuevo-proyecto.store';
+import { ProyectosStore } from '../../../proyectos.store';
 import { BacklogStore } from '../../../../backlog/backlog.store';
 import { ItemDialog } from '../../../../backlog/item-dialog/item-dialog';
 
@@ -17,16 +18,20 @@ import { ItemDialog } from '../../../../backlog/item-dialog/item-dialog';
 export class PasoBacklog {
   private dialog = inject(MatDialog);
   private proyectoStore = inject(NuevoProyectoStore);
+  private proyectosStore = inject(ProyectosStore);
   private backlogStore = inject(BacklogStore);
   private router = inject(Router);
 
   columns = ['id', 'tipo', 'titulo', 'prioridad', 'estimacion', 'responsable'];
 
   items = this.backlogStore.items;
+  error = this.proyectosStore.error;
 
-  finalizar() {
-    this.proyectoStore.finalizar();
-    this.router.navigate(['/proyectos']);
+  async finalizar() {
+    const exito = await this.proyectoStore.finalizar();
+    if (exito) {
+      this.router.navigate(['/proyectos']);
+    }
   }
 
   abrirNuevoItem() {

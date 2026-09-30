@@ -26,6 +26,12 @@
     gap: 1.5rem;
   }
 
+  &__error {
+    margin: 0;
+    color: var(--mat-sys-error);
+    font-size: 0.875rem;
+  }
+
   &__submit {
     margin-top: 1rem;
     height: 48px;          // botón más alto, más "clickeable"

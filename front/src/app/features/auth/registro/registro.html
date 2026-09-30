@@ -30,7 +30,13 @@
           }
         </mat-form-field>
 
-        <button mat-flat-button type="submit" class="login__submit">Registrarme</button>
+        @if (errorMessage()) {
+          <p class="login__error">{{ errorMessage() }}</p>
+        }
+
+        <button mat-flat-button type="submit" class="login__submit" [disabled]="loading()">
+          {{ loading() ? 'Creando cuenta…' : 'Registrarme' }}
+        </button>
       </form>
 
       <p class="login__footer">

@@ -15,4 +15,10 @@ export class ProyectosList {
   private store = inject(ProyectosStore);
 
   proyectos = this.store.proyectos;
+  loading = this.store.loading;
+  error = this.store.error;
+
+  constructor() {
+    this.store.load();
+  }
 }

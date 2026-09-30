@@ -4,7 +4,6 @@ import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
-import { UUID } from 'typeorm/driver/mongodb/bson.typings.js';
 
 const SALT_ROUNDS = 10;
 

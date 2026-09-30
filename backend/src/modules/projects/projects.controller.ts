@@ -19,8 +19,8 @@ export class ProjectsController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtiene el dashboard base de un proyecto' })
-  findOne(@Param('id') id: string) {
-    return this.projectsService.findOne(id);
+  findOne(@Param('id') id: string, @Req() req: any) {
+    return this.projectsService.findOne(id, req.user.userId);
   }
 
   @Post()

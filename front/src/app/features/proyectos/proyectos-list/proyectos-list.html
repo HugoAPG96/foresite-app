@@ -10,8 +10,16 @@
     </button>
   </header>
 
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (error()) {
+    <p class="project-card__desc" style="color: var(--mat-sys-error);">{{ error() }}</p>
+  }
+
   <div class="proyectos__grid">
-    @for (proyecto of proyectos(); track proyecto.nombre) {
+    @for (proyecto of proyectos(); track proyecto.id) {
       <a class="project-card" routerLink="/dashboard">
         <div class="project-card__header">
           <p class="project-card__name">{{ proyecto.nombre }}</p>

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -10,6 +11,7 @@ export const routes: Routes = [
   {
     path: '',
     loadComponent: () => import('./layout/admin-layout/admin-layout').then(m => m.AdminLayout),
+    canActivate: [authGuard],
     children: [
       { path: 'proyecto/nuevo', loadChildren: () => import('./features/proyectos/proyecto-wizard/proyecto-wizard.routes').then(m => m.PROYECTO_WIZARD_ROUTES) },
       { path: 'proyectos', loadComponent: () => import('./features/proyectos/proyectos-list/proyectos-list').then(m => m.ProyectosList) },

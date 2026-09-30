@@ -30,7 +30,7 @@
         <mat-icon>account_circle</mat-icon>
       </button>
       <mat-menu #userMenu="matMenu">
-        <button type="button" mat-menu-item routerLink="/login">
+        <button type="button" mat-menu-item (click)="logout()">
           <mat-icon>logout</mat-icon>
           <span>Cerrar sesión</span>
         </button>

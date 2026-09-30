@@ -16,9 +16,9 @@ export class ProjectsService {
     return this.projectsRepository.find({ where: { createdBy: userId } });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, userId: string) {
     const project = await this.projectsRepository.findOne({ where: { id } });
-    if (!project) {
+    if (!project || project.createdBy !== userId) {
       throw new NotFoundException('Proyecto no encontrado');
     }
     return project;

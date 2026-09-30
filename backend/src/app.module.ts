@@ -11,7 +11,17 @@ import { RisksModule } from './modules/risks/risks.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: (config: Record<string, unknown>) => {
+        if (!config.JWT_SECRET) {
+          throw new Error(
+            'JWT_SECRET no está definido. Configúralo en backend/.env antes de arrancar la API.',
+          );
+        }
+        return config;
+      },
+    }),
 
     // Conexión a PostgreSQL (Neon). autoLoadEntities evita mantener un glob
     // manual: cada módulo registra sus entidades con TypeOrmModule.forFeature

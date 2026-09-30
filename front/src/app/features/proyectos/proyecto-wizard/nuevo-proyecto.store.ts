@@ -71,18 +71,22 @@ export class NuevoProyectoStore {
     this._acta.set({ ...this._acta(), ...cambios });
   }
 
-  // Convierte el borrador del wizard en un proyecto de "Mis Proyectos" y
-  // limpia el Acta para que el próximo proyecto empiece en blanco.
-  // Con backend, aquí va el POST /proyectos con acta + fases + backlog.
-  finalizar() {
-    const { nombre, objetivo } = this._acta();
-    this.proyectosStore.agregar({
-      nombre: nombre.trim() || 'Nuevo proyecto',
-      descripcion: objetivo.trim() || 'Sin objetivo definido',
-      avance: 0,
-      estado: 'verde',
+  // Convierte el borrador del wizard en un proyecto real vía POST /projects.
+  // Solo limpia el Acta si la creación en el backend fue exitosa.
+  async finalizar(): Promise<boolean> {
+    const { nombre, objetivo, alcance, fechaInicio, fechaLimite } = this._acta();
+    const exito = await this.proyectosStore.crear({
+      name: nombre.trim() || 'Nuevo proyecto',
+      objective: objetivo.trim() || undefined,
+      scope: alcance.trim() || undefined,
+      startDate: fechaInicio ?? new Date().toISOString(),
+      endDate: fechaLimite ?? new Date().toISOString(),
     });
-    this._acta.set(ACTA_VACIA);
+
+    if (exito) {
+      this._acta.set(ACTA_VACIA);
+    }
+    return exito;
   }
 
   agregarIntegrante(nombre: string) {

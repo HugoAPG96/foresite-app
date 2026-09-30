@@ -22,7 +22,13 @@
           }
         </mat-form-field>
 
-        <button mat-flat-button type="submit" class="login__submit">Ingresar</button>
+        @if (errorMessage()) {
+          <p class="login__error">{{ errorMessage() }}</p>
+        }
+
+        <button mat-flat-button type="submit" class="login__submit" [disabled]="loading()">
+          {{ loading() ? 'Ingresando…' : 'Ingresar' }}
+        </button>
       </form>
 
       <p class="login__footer">

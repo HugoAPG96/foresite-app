@@ -51,6 +51,10 @@
 
   <p class="paso__note">Tabla independiente del cronograma · descripción y criterios se editan al abrir cada ítem.</p>
 
+  @if (error()) {
+    <p class="paso__note" style="color: var(--mat-sys-error);">{{ error() }}</p>
+  }
+
   <div class="paso__actions">
     <button type="button" mat-stroked-button routerLink="/proyecto/nuevo/raci">Atrás</button>
     <button type="button" mat-flat-button (click)="finalizar()">Finalizar</button>
