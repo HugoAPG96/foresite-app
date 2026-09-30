@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>{{ esEdicion ? 'Editar tarea' : 'Nueva tarea' }}</h2>
+
+<mat-dialog-content class="tarea-dialog">
+  <mat-form-field appearance="outline" class="tarea-dialog__full">
+    <mat-label>Título</mat-label>
+    <input matInput [ngModel]="titulo()" (ngModelChange)="titulo.set($event)" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="tarea-dialog__full">
+    <mat-label>Responsable</mat-label>
+    <mat-select [value]="responsableId()" (selectionChange)="responsableId.set($event.value)">
+      @for (m of data.miembros; track m.id) {
+        @if (m.usuario) {
+          <mat-option [value]="m.usuario.id">{{ m.usuario.name }}</mat-option>
+        }
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="tarea-dialog__row">
+    <mat-form-field appearance="outline" class="tarea-dialog__field-half">
+      <mat-label>Fecha inicio</mat-label>
+      <input matInput type="date" [ngModel]="fechaInicio()" (ngModelChange)="fechaInicio.set($event)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="tarea-dialog__field-half">
+      <mat-label>Fecha fin</mat-label>
+      <input matInput type="date" [ngModel]="fechaFin()" (ngModelChange)="fechaFin.set($event)" />
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline" class="tarea-dialog__full">
+    <mat-label>Prioridad</mat-label>
+    <mat-select [value]="prioridad()" (selectionChange)="prioridad.set($event.value)">
+      <mat-option value="Alta">Alta</mat-option>
+      <mat-option value="Media">Media</mat-option>
+      <mat-option value="Baja">Baja</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button type="button" mat-stroked-button (click)="cancelar()">Cancelar</button>
+  <button type="button" mat-flat-button (click)="guardar()">{{ esEdicion ? 'Guardar cambios' : 'Crear tarea' }}</button>
+</mat-dialog-actions>

@@ -47,6 +47,7 @@ export class AdminLayout {
       { path: `${p}/backlog`, icon: 'view_list', label: 'Backlog' },
       { path: `${p}/riesgos`, icon: 'warning', label: 'Riesgos' },
       { path: `${p}/reportes`, icon: 'bar_chart', label: 'Reportes' },
+      { path: `${p}/miembros`, icon: 'group', label: 'Miembros' },
     ];
   });
 
