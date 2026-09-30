@@ -5,7 +5,10 @@ const BASE = 'http://localhost:4200';
 test.describe('TA-001 — Autenticación E2E', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto(BASE);
-    await page.evaluate(() => localStorage.clear());
+    await page.evaluate(() => {
+        localStorage.removeItem('auth:token');
+        localStorage.removeItem('auth:currentUser');
+        });
   });
 
   test('Registro con datos válidos: la cuenta se crea y el usuario accede al sistema', async ({ page }) => {
