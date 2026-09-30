@@ -69,6 +69,7 @@
 
   <div class="paso__row">
     <p class="paso__label">Integrantes del equipo</p>
+    <p class="paso__hint">Agregalos por correo — deben ser usuarios ya registrados en Foresite. Se agregan como miembros reales del proyecto al finalizar.</p>
     <mat-chip-set>
       @for (integrante of integrantes(); track integrante) {
         <mat-chip>
@@ -80,7 +81,8 @@
         <mat-form-field appearance="outline" class="paso__inline-add">
           <input
             matInput
-            placeholder="Nombre"
+            type="email"
+            placeholder="correo@ejemplo.com"
             [ngModel]="nuevoIntegrante()"
             (ngModelChange)="nuevoIntegrante.set($event)"
             (keydown.enter)="confirmarIntegrante()"

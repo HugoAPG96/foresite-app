@@ -28,10 +28,15 @@ export class PasoBacklog {
   error = this.proyectosStore.error;
 
   async finalizar() {
-    const exito = await this.proyectoStore.finalizar();
-    if (exito) {
-      this.router.navigate(['/proyectos']);
+    const fallidos = await this.proyectoStore.finalizar();
+    if (fallidos === null) return; // falló la creación del proyecto; el error ya se muestra abajo
+
+    if (fallidos.length > 0) {
+      alert(
+        `El proyecto se creó, pero no se pudieron agregar estos integrantes (¿correo no registrado?): ${fallidos.join(', ')}`,
+      );
     }
+    this.router.navigate(['/proyectos']);
   }
 
   abrirNuevoItem() {

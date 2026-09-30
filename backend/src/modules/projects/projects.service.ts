@@ -59,12 +59,20 @@ export class ProjectsService {
     return project;
   }
 
-  create(dto: CreateProjectDto, userId: string) {
+  async create(dto: CreateProjectDto, userId: string): Promise<Project> {
     const project = this.projectsRepository.create({ ...dto, createdBy: userId });
     // La tabla `projects` no genera el id por default (columna sin DEFAULT
     // en el DDL), igual que `users` — se genera acá, no en la base.
     project.id = crypto.randomUUID();
-    return this.projectsRepository.save(project);
+    const saved = await this.projectsRepository.save(project);
+
+    // El creador queda como miembro de su propio proyecto de una, para
+    // poder ser asignable (ej. como responsable de tareas) sin un paso extra.
+    const member = this.membersRepository.create({ projectId: saved.id, userId, role: 'owner' });
+    member.id = crypto.randomUUID();
+    await this.membersRepository.save(member);
+
+    return saved;
   }
 
   /**

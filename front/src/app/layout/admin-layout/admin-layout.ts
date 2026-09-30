@@ -42,12 +42,10 @@ export class AdminLayout {
     const p = `/proyectos/${actual.id}`;
     return [
       ...base,
-      { path: `${p}/dashboard`, icon: 'dashboard', label: 'Dashboard' },
       { path: `${p}/tareas`, icon: 'checklist', label: 'Tareas' },
-      { path: `${p}/backlog`, icon: 'view_list', label: 'Backlog' },
-      { path: `${p}/riesgos`, icon: 'warning', label: 'Riesgos' },
-      { path: `${p}/reportes`, icon: 'bar_chart', label: 'Reportes' },
       { path: `${p}/miembros`, icon: 'group', label: 'Miembros' },
+      // Dashboard/Backlog/Riesgos/Reportes ocultos: siguen mock, no entran en
+      // este sprint. Se vuelven a mostrar cuando se conecten al backend real.
     ];
   });
 

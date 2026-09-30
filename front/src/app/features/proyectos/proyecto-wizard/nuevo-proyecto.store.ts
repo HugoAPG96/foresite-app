@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { persistedSignal } from '../../../core/storage/persisted-signal';
 import { ProyectosStore } from '../proyectos.store';
+import { MiembrosStore } from '../../miembros/miembros.store';
 
 export interface ActaDraft {
   nombre: string;
@@ -29,26 +30,7 @@ export interface FaseRaci {
   tareas: TareaRaci[];
 }
 
-const INTEGRANTES_MOCK = ['Miguel', 'Hugo', 'Renzo'];
-
-const FASES_MOCK: FaseRaci[] = [
-  {
-    nombre: '1. Planificación y gestión del proyecto',
-    tareas: [
-      {
-        id: '1.1',
-        titulo: 'Definición del alcance',
-        responsable: 'Miguel',
-        aCargo: 'Hugo',
-        consultado: 'Renzo',
-        informado: 'Todo el equipo',
-        inicio: '14/09',
-        fin: '16/09',
-        editing: false,
-      },
-    ],
-  },
-];
+const FASES_MOCK: FaseRaci[] = [];
 
 // Estado compartido MIENTRAS se completa el wizard de "Nuevo proyecto".
 // Acta (integrantes), RACI (fases/tareas) y Backlog (que necesita ambos para
@@ -58,9 +40,12 @@ const FASES_MOCK: FaseRaci[] = [
 @Injectable({ providedIn: 'root' })
 export class NuevoProyectoStore {
   private readonly proyectosStore = inject(ProyectosStore);
+  private readonly miembrosStore = inject(MiembrosStore);
 
   private readonly _acta = persistedSignal<ActaDraft>('wizard:acta', ACTA_VACIA);
-  private readonly _integrantes = persistedSignal<string[]>('wizard:integrantes', INTEGRANTES_MOCK);
+  // Correos de integrantes a agregar como miembros reales cuando se cree el
+  // proyecto (deben ser usuarios ya registrados; se valida recién al Finalizar).
+  private readonly _integrantes = persistedSignal<string[]>('wizard:integrantes', []);
   private readonly _fases = persistedSignal<FaseRaci[]>('wizard:fases', FASES_MOCK);
 
   readonly acta = this._acta.asReadonly();
@@ -71,11 +56,13 @@ export class NuevoProyectoStore {
     this._acta.set({ ...this._acta(), ...cambios });
   }
 
-  // Convierte el borrador del wizard en un proyecto real vía POST /projects.
-  // Solo limpia el Acta si la creación en el backend fue exitosa.
-  async finalizar(): Promise<boolean> {
+  // Convierte el borrador del wizard en un proyecto real vía POST /projects,
+  // y agrega los integrantes cargados como miembros reales de ese proyecto.
+  // Devuelve `null` si falló la creación del proyecto, o la lista de correos
+  // que no se pudieron agregar como miembro (vacía si todos entraron bien).
+  async finalizar(): Promise<string[] | null> {
     const { nombre, objetivo, alcance, fechaInicio, fechaLimite } = this._acta();
-    const exito = await this.proyectosStore.crear({
+    const proyecto = await this.proyectosStore.crear({
       name: nombre.trim() || 'Nuevo proyecto',
       objective: objetivo.trim() || undefined,
       scope: alcance.trim() || undefined,
@@ -83,10 +70,17 @@ export class NuevoProyectoStore {
       endDate: fechaLimite ?? new Date().toISOString(),
     });
 
-    if (exito) {
-      this._acta.set(ACTA_VACIA);
+    if (!proyecto) return null;
+
+    const fallidos: string[] = [];
+    for (const email of this._integrantes()) {
+      const ok = await this.miembrosStore.agregar(proyecto.id, email);
+      if (!ok) fallidos.push(email);
     }
-    return exito;
+
+    this._acta.set(ACTA_VACIA);
+    this._integrantes.set([]);
+    return fallidos;
   }
 
   agregarIntegrante(nombre: string) {

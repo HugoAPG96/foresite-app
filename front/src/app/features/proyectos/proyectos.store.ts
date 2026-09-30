@@ -59,7 +59,7 @@ export class ProyectosStore {
     }
   }
 
-  async crear(payload: CreateProyectoPayload): Promise<boolean> {
+  async crear(payload: CreateProyectoPayload): Promise<Proyecto | null> {
     if (MOCK_MODE) {
       const nuevo: Proyecto = {
         id: crypto.randomUUID(),
@@ -70,7 +70,7 @@ export class ProyectosStore {
       };
       this._proyectosMock.set([...this._proyectosMock(), nuevo]);
       this._proyectos.set(this._proyectosMock());
-      return true;
+      return nuevo;
     }
 
     this._error.set(null);
@@ -78,11 +78,12 @@ export class ProyectosStore {
       const res = await firstValueFrom(
         this.http.post<ProjectApiResponse>(`${API_BASE_URL}/projects`, payload),
       );
-      this._proyectos.set([...this._proyectos(), mapProyectoFromApi(res)]);
-      return true;
+      const proyecto = mapProyectoFromApi(res);
+      this._proyectos.set([...this._proyectos(), proyecto]);
+      return proyecto;
     } catch {
       this._error.set('No se pudo crear el proyecto.');
-      return false;
+      return null;
     }
   }
 }

@@ -10,23 +10,7 @@ const PREFIJOS: Record<TipoBacklog, string> = {
   Enabler: 'EN',
 };
 
-const ITEMS_MOCK: ItemBacklog[] = [
-  {
-    id: 'EP-000',
-    tipo: 'Épica',
-    historiaUsuario: 'Inicio del proyecto',
-    descripcion: '',
-    criterios: '',
-    prioridad: 'Alta',
-    estimacion: 0,
-    sprint: 'Sprint 0',
-    fase: '1. Planificación y gestión del proyecto',
-    responsables: ['Miguel', 'Hugo'],
-    fechaInicio: '',
-    fechaFin: '',
-    dependencia: 'Ninguna',
-  },
-];
+const ITEMS_MOCK: ItemBacklog[] = [];
 
 // Vive fuera del wizard porque el Backlog se sigue viendo y editando
 // después de crear el proyecto (es su propia pantalla en el sidebar).

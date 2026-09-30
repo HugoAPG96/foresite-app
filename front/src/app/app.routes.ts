@@ -20,7 +20,7 @@ export const routes: Routes = [
         path: 'proyectos/:id',
         loadComponent: () => import('./features/proyectos/proyecto-contexto/proyecto-contexto').then(m => m.ProyectoContexto),
         children: [
-          { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+          { path: '', redirectTo: 'tareas', pathMatch: 'full' },
           { path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard').then(m => m.Dashboard) },
           { path: 'tareas', loadComponent: () => import('./features/tareas/tareas').then(m => m.Tareas) },
           { path: 'backlog', loadComponent: () => import('./features/backlog/backlog').then(m => m.Backlog) },
