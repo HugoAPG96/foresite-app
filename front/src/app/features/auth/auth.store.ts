@@ -30,7 +30,7 @@ export class AuthStore {
   private readonly http = inject(HttpClient);
 
   private readonly _token = persistedSignal<string | null>('auth:token', null);
-  private readonly _currentUser = signal<CurrentUser | null>(null);
+  private readonly _currentUser = persistedSignal<CurrentUser | null>('auth:currentUser', null);
 
   readonly token = this._token.asReadonly();
   readonly isAuthenticated = computed(() => !!this._token());
@@ -47,6 +47,15 @@ export class AuthStore {
 
   async register(payload: RegisterPayload): Promise<void> {
     if (MOCK_MODE) {
+      const users = this.getMockUsers();
+      const key = payload.email.toLowerCase();
+      if (users[key]) {
+        const err = new Error('Email ya registrado') as Error & { status: number };
+        err.status = 409;
+        throw err;
+      }
+      users[key] = { name: payload.name, email: payload.email, password: payload.password };
+      this.saveMockUsers(users);
       this._token.set(this.buildMockToken(payload.email));
       this._currentUser.set({ id: 'mock-user', name: payload.name, email: payload.email });
       return;
@@ -60,8 +69,15 @@ export class AuthStore {
 
   async login(payload: LoginPayload): Promise<void> {
     if (MOCK_MODE) {
+      const users = this.getMockUsers();
+      const user = users[payload.email.toLowerCase()];
+      if (!user || user.password !== payload.password) {
+        const err = new Error('Credenciales inválidas') as Error & { status: number };
+        err.status = 401;
+        throw err;
+      }
       this._token.set(this.buildMockToken(payload.email));
-      this._currentUser.set({ id: 'mock-user', name: payload.email.split('@')[0], email: payload.email });
+      this._currentUser.set({ id: 'mock-user', name: user.name, email: user.email });
       return;
     }
     const res = await firstValueFrom(
@@ -79,7 +95,15 @@ export class AuthStore {
   async actualizarNombre(name: string): Promise<boolean> {
     if (MOCK_MODE) {
       const actual = this._currentUser();
-      if (actual) this._currentUser.set({ ...actual, name });
+      if (actual) {
+        this._currentUser.set({ ...actual, name });
+        const users = this.getMockUsers();
+        const key = actual.email.toLowerCase();
+        if (users[key]) {
+          users[key].name = name;
+          this.saveMockUsers(users);
+        }
+      }
       return true;
     }
     try {
@@ -100,6 +124,21 @@ export class AuthStore {
     } catch {
       // Token inválido/expirado; el authGuard redirige en el próximo intento de navegación.
     }
+  }
+
+  private readonly MOCK_USERS_KEY = 'auth:mockUsers';
+
+  private getMockUsers(): Record<string, { name: string; email: string; password: string }> {
+    try {
+      const raw = localStorage.getItem(this.MOCK_USERS_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  }
+
+  private saveMockUsers(users: Record<string, { name: string; email: string; password: string }>): void {
+    localStorage.setItem(this.MOCK_USERS_KEY, JSON.stringify(users));
   }
 
   // En modo simulado no hay backend que emita un JWT real: cualquier

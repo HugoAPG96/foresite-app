@@ -1,37 +1,31 @@
-# Gestión de Proyectos de Software
+# Foresite — Gestión de Proyectos de Software
 
-Aplicación web para la planificación, gestión y seguimiento de proyectos de desarrollo de software.
+Aplicación web para gestión de proyectos de software con detección de riesgos, predicción de retraso y reportes automáticos.
 
-## 🚀 Funcionalidades
+**Producción:** https://foresite-app.vercel.app
 
-* Gestión de proyectos
-* Gestión de equipos
-* Product Backlog
-* Historias de usuario y tareas
-* Gestión de Sprints
-* Seguimiento del progreso
-* Dashboard del proyecto
+---
 
-## 🛠️ Tecnologías
+## Estructura del proyecto
+foresite-app/
+├── front/ # Aplicación Angular (UI)
+├── backend/ # API REST con NestJS + PostgreSQL
+├── e2e/ # Pruebas End-to-End con Playwright
+├── .github/workflows/ # CI con GitHub Actions
+└── README.md
 
-* Frontend: Por definir
-* Backend: Por definir
-* Base de datos: Por definir
-* Git / GitHub
-* DevOps y despliegue
 
-## 👥 Equipo
+> **Nota:** el equipo usa `backend/` en lugar de `back/` por claridad. Es la única diferencia con la nomenclatura sugerida.
 
-| Integrante   | Rol                 |
-| ------------ | ------------------- |
-| Miguel       | Desarrollo          |
-| Renzo        | Desarrollo          |
-| Hugo Peralta | DevOps / Desarrollo |
+---
 
-## 📌 Estado
+## Requisitos previos
 
-🚧 En desarrollo.
+- **Node.js** v20 o superior
+- **npm** v10 o superior
+- **PostgreSQL** (se usa una instancia gestionada en Render)
 
-## 🌿 Git
-
-Cada integrante trabajará en su propia rama y los cambios serán integrados mediante **Pull Requests** hacia `main`.
+Verifica tu versión:
+```bash
+node --version
+npm --version
