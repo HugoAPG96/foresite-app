@@ -38,7 +38,7 @@ no un criterio específico de TA-002. Se documenta sin duplicar una exigencia in
 
 | ID | Criterio transversal | Validación | Evidencia | Resultado |
 | --- | --- | --- | --- | --- |
-| CI | GitHub Actions ejecuta el entorno mock/controlado, no `tests-prod/`, y no escribe en Neon | workflow `E2E Tests` + run remoto | `TA-002-ci-github-actions.png` | PENDIENTE |
+| CI | GitHub Actions ejecuta el entorno mock/controlado, no `tests-prod/`, y no escribe en Neon | workflow `E2E Tests` run #12 (push `406075e`) → `success` | `TA-002-ci-github-actions.png` + run URL | PASS |
 
 ## Resumen
 
@@ -48,7 +48,8 @@ PASS: 6
 NO CUBIERTO: 0
 BLOQUEADO: 0
 
-CI/CD (transversal): PENDIENTE (verificación remota tras el push)
+CI/CD (transversal): PASS
+https://github.com/HugoAPG96/foresite-app/actions/runs/37720158013
 ```
 
 ## Nota sobre datos generados

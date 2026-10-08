@@ -86,11 +86,18 @@ npx playwright test              -> 7 passed, 4 skipped, 0 failed
 npx playwright test tests/auth.spec.ts -> 5 passed
 ```
 
-- Verificación remota (GitHub Actions): **pendiente** (se cierra tras el push;
-  ver `TA-002-ci-github-actions.png` y el run en `checklist.md`).
+- Verificación remota (GitHub Actions) — run real:
+
+```text
+Workflow: E2E Tests
+Run:      #12  (event=push, branch=main, commit=406075e)
+URL:      https://github.com/HugoAPG96/foresite-app/actions/runs/37720158013
+Estado:   success (1m11s; job `e2e` OK, todos los pasos OK)
+Evidencia: TA-002-ci-github-actions.png
+```
 
 ## Conclusión
 
-**TA-002 concluida funcionalmente** (6/6 criterios con prueba real contra el
-sistema desplegado y evidencia visual). El cierre formal queda pendiente de la
-verificación del workflow de GitHub Actions (criterio transversal CI).
+**TA-002 CONCLUIDA**: 6/6 criterios con prueba real contra el sistema desplegado
+(Vercel→Render→Neon) y evidencia visual; CI/CD transversal verificado en
+GitHub Actions (run #12, `success`).

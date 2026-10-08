@@ -76,6 +76,14 @@ TA-001: 5/5 PASS (no se rompe)
 
 Reporte: `evidence/TA-002/playwright-report/index.html` · Traces: `evidence/TA-002/traces/`.
 
+CI/CD (transversal) verificado en GitHub Actions:
+
+```text
+Workflow E2E Tests · Run #12 (commit 406075e) · conclusion success
+https://github.com/HugoAPG96/foresite-app/actions/runs/37720158013
+Evidencia: TA-002-ci-github-actions.png
+```
+
 ## 7. Limitaciones conocidas
 
 - **Datos persistentes en Neon:** la suite crea usuarios/proyectos de prueba
