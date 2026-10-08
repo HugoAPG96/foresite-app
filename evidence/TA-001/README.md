@@ -4,14 +4,13 @@
 
 ```text
 Criterios evaluados: 8
-PASS: 7
+PASS: 8
 NO CUBIERTO: 0
-PENDIENTE (verificación remota de C07): 1
+PENDIENTE: 0
 BLOQUEADO: 0
 ```
 
-Estado: **TA-001 cerrada funcionalmente; C07 (GitHub Actions) pendiente de la
-verificación remota del workflow** (ver sección CI).
+Estado: **TA-001 CONCLUIDA** (todos los criterios con prueba y evidencia).
 
 > Matriz completa y detalle por criterio: `checklist.md`.
 
@@ -36,7 +35,7 @@ TA-001 valida el flujo de autenticación y perfil del frontend:
 | C04 | Login con credenciales incorrectas | PASS | `auth.spec.ts` › "Inicio de sesión con credenciales incorrectas…" | `TA-001-C04-login-incorrecto.png` |
 | C05 | Edición de nombre de perfil | PASS | `auth.spec.ts` › "Edición de nombre…" | `TA-001-C05-perfil-nombre-editado.png` |
 | C06 | Suite E2E automatizada | PASS | `npx playwright test tests/auth.spec.ts` → 5 passed | `playwright-report/` |
-| C07 | CI (GitHub Actions) con `MOCK_MODE=true` | PENDIENTE | workflow `E2E Tests` (`push`/`PR` a `main`) | run remoto |
+| C07 | CI (GitHub Actions) con `MOCK_MODE=true` | PASS | workflow `E2E Tests`, run #10 (push `80b598e`) → `success` | `TA-001-C07-github-actions.png` |
 | C08 | Documentación y evidencia | PASS | `README.md` + `diagnostico.md` + capturas + reporte | `evidence/TA-001/` |
 
 ## Ejecución
@@ -83,12 +82,19 @@ Verificación local equivalente (misma config y `MOCK_MODE=true`):
 npx playwright test --workers=1  ->  7 passed, 4 skipped, 0 failed
 ```
 
-Verificación remota: **pendiente** (se completa tras el push; ver estado en el
-run de GitHub Actions y en el archivo de evidencia correspondiente).
+Verificación remota (run real):
+
+```text
+Workflow: E2E Tests
+Run:      #10  (event=push, branch=main, commit=80b598e)
+URL:      https://github.com/HugoAPG96/foresite-app/actions/runs/37719411690
+Estado:   success (57s; job `e2e` 53s, todos los pasos OK)
+Evidencia: TA-001-C07-github-actions.png
+```
 
 ## Conclusión
 
-TA-001 queda validada funcionalmente (5/5) y documentada con checklist,
-diagnóstico, capturas y reporte HTML. No se modificó la lógica funcional de las
-pruebas: solo se añadió la captura de pantalla por criterio, condicionada a
-`CAPTURE_EVIDENCE`.
+**TA-001 CONCLUIDA**: 8/8 criterios evaluados con prueba y evidencia
+(7 funcionales/documentación + CI en GitHub Actions en `SUCCESS`). No se modificó
+la lógica funcional de las pruebas: solo se añadió la captura de pantalla por
+criterio, condicionada a `CAPTURE_EVIDENCE`.

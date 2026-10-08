@@ -35,7 +35,7 @@ Por eso, los criterios se derivan así:
 | C04 | Inicio de sesión con credenciales incorrectas | Mostrar error | `auth.spec.ts` › "Inicio de sesión con credenciales incorrectas…" | `TA-001-C04-login-incorrecto.png` | PASS |
 | C05 | Edición de nombre de perfil | Guardar el cambio y reflejarlo tras recargar | `auth.spec.ts` › "Edición de nombre…" | `TA-001-C05-perfil-nombre-editado.png` | PASS |
 | C06 | Suite E2E automatizada ejecutable | Correr TA-001 de forma automatizada | `npx playwright test tests/auth.spec.ts` → 5 passed | `playwright-report/` | PASS |
-| C07 | Ejecución en CI (GitHub Actions) | CI ejecuta TA-001 con `MOCK_MODE=true`, sin tocar backend/Neon | Workflow `E2E Tests` + run remoto | `TA-001-C07-github-actions.png` (o run URL) | PENDIENTE |
+| C07 | Ejecución en CI (GitHub Actions) | CI ejecuta TA-001 con `MOCK_MODE=true`, sin tocar backend/Neon | Workflow `E2E Tests` run #10 (push `80b598e`) → SUCCESS | `TA-001-C07-github-actions.png` + run URL | PASS |
 | C08 | Documentación y evidencia trazable | README + diagnóstico + capturas + reporte | `README.md`, `diagnostico.md` | `evidence/TA-001/` | PASS |
 
 ## Clasificación (definiciones)
@@ -48,11 +48,13 @@ Por eso, los criterios se derivan así:
 
 ```text
 Total criterios: 8
-PASS: 7
+PASS: 8
 NO CUBIERTO: 0
-PENDIENTE (verificación remota C07): 1
+PENDIENTE: 0
 BLOQUEADO: 0
 ```
 
-> C07 se cierra cuando el workflow real de GitHub Actions termine en `SUCCESS`
-> (ver `README.md`). Hasta entonces TA-001 no se marca como concluida al 100%.
+Todos los criterios tienen prueba y evidencia. El run de GitHub Actions que
+cierra C07 es:
+`https://github.com/HugoAPG96/foresite-app/actions/runs/37719411690`
+(workflow `E2E Tests`, commit `80b598e`, conclusión `success`).

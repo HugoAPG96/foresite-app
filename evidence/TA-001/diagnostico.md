@@ -76,6 +76,16 @@ Suite mock completa (equivalente a CI, `MOCK_MODE=true`):
 npx playwright test --workers=1  ->  7 passed, 4 skipped, 0 failed
 ```
 
+Verificación en CI (GitHub Actions), run real:
+
+```text
+Workflow: E2E Tests
+Run:      #10  (push, main, commit 80b598e)
+URL:      https://github.com/HugoAPG96/foresite-app/actions/runs/37719411690
+Estado:   success
+Evidencia: TA-001-C07-github-actions.png
+```
+
 Capturas y reporte en `evidence/TA-001/`.
 
 ## 6. Criterios cubiertos
@@ -88,16 +98,17 @@ Capturas y reporte en `evidence/TA-001/`.
 | C04 | Login con credenciales incorrectas | PASS | `TA-001-C04-login-incorrecto.png` |
 | C05 | Edición de nombre de perfil | PASS | `TA-001-C05-perfil-nombre-editado.png` |
 | C06 | Suite E2E automatizada | PASS | `playwright-report/` |
+| C07 | CI (GitHub Actions) con `MOCK_MODE=true` | PASS | `TA-001-C07-github-actions.png` |
 | C08 | Documentación y evidencia | PASS | `README.md`, `checklist.md`, este archivo |
 
 ## 7. Criterios no cubiertos
 
-Ninguno marcado como `NO CUBIERTO`. Sin embargo:
+Ninguno. Los 8 criterios derivados quedaron con prueba y evidencia:
 
-- **C07 (CI / GitHub Actions)**: validado localmente de forma equivalente
-  (misma config, `MOCK_MODE=true`, 7 passed / 4 skipped). Su cierre formal exige
-  el run remoto del workflow; queda `PENDIENTE` hasta verificar el push (ver
-  `README.md`). No se declara PASS por inferencia.
+- C01–C05: ejecución E2E (5/5) con captura por criterio.
+- C06: suite automatizada ejecutable.
+- C07: run real de GitHub Actions en `success` (verificable y con captura).
+- C08: documentación y evidencia en `evidence/TA-001/`.
 
 ## 8. Limitaciones
 
