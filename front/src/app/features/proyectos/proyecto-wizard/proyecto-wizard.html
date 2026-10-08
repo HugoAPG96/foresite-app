@@ -1,0 +1,32 @@
+<div class="wizard">
+  <header class="page-header">
+    <div>
+      <h1 class="page-header__title">Nuevo proyecto</h1>
+      <p class="page-header__subtitle">Completa los 4 pasos para dejar tu proyecto listo</p>
+    </div>
+  </header>
+
+  <div class="panel">
+    <nav class="wizard__steps">
+      @for (paso of pasos; track paso.path; let i = $index) {
+        <a
+          class="wizard__step"
+          [routerLink]="paso.path"
+          routerLinkActive="wizard__step--active"
+        >
+          <span class="wizard__step-index">{{ i + 1 }}</span>
+          {{ paso.label }}
+        </a>
+      }
+
+      <span class="wizard__step wizard__step--destino">
+        <span class="wizard__step-index">{{ pasos.length + 1 }}</span>
+        {{ destino }}
+      </span>
+    </nav>
+
+    <div class="wizard__content">
+      <router-outlet />
+    </div>
+  </div>
+</div>

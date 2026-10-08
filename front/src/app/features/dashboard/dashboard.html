@@ -1,0 +1,86 @@
+<div class="dashboard">
+  <header class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ proyecto().nombre }}</h1>
+      <p class="page-header__subtitle">{{ proyecto().sprint }} · {{ proyecto().avance }}% de avance general</p>
+    </div>
+    @if (proyecto().enRiesgo) {
+      <span class="badge badge--warning">
+        <mat-icon inline>warning</mat-icon>
+        En riesgo
+      </span>
+    }
+  </header>
+
+  <section class="dashboard__progress">
+    <mat-progress-bar mode="determinate" [value]="proyecto().avance" />
+  </section>
+
+  <section class="kpi-grid">
+    @for (stat of stats(); track stat.label) {
+      <div class="stat-tile">
+        <span class="stat-tile__icon">
+          <mat-icon>{{ stat.icon }}</mat-icon>
+        </span>
+        <div>
+          <p class="stat-tile__value">{{ stat.value }}</p>
+          <p class="stat-tile__label">{{ stat.label }}</p>
+        </div>
+      </div>
+    }
+  </section>
+
+  <section class="section-grid">
+    <div class="panel">
+      <div class="panel__title">
+        <mat-icon inline class="dashboard__prediction-icon">insights</mat-icon>
+        Predicción de retraso
+      </div>
+      <p class="dashboard__prediction-value">{{ prediccion().probabilidad }}%</p>
+      <p class="dashboard__prediction-text">
+        de probabilidad de terminar <strong>{{ prediccion().diasRetraso }} días después</strong> de lo planificado.
+      </p>
+    </div>
+
+    <div class="panel">
+      <p class="panel__title">Alertas</p>
+      <div class="alert-list">
+        @for (alerta of alertas(); track alerta.mensaje) {
+          <div class="alert-list__item" [class]="'alert-list__item--' + alerta.tipo">
+            <mat-icon>{{ alerta.tipo === 'danger' ? 'error' : 'report_problem' }}</mat-icon>
+            <span>{{ alerta.mensaje }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section-grid">
+    <div class="panel">
+      <p class="panel__title">Carga por integrante</p>
+      <div class="carga-bars">
+        @for (integrante of cargaEquipo(); track integrante.nombre) {
+          <div class="carga-bars__row">
+            <span class="carga-bars__name">{{ integrante.nombre }}</span>
+            <div class="carga-bars__track">
+              <div class="carga-bars__fill" [style.width.%]="integrante.tareas * 6"></div>
+            </div>
+            <span class="carga-bars__value">{{ integrante.tareas }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="panel__title">Planificado vs. Real</p>
+      <div class="dashboard__chart">
+        <canvas
+          baseChart
+          [type]="planificadoVsRealChartType"
+          [data]="planificadoVsRealChartData()"
+          [options]="planificadoVsRealChartOptions"
+        ></canvas>
+      </div>
+    </div>
+  </section>
+</div>

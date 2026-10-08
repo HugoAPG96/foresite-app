@@ -1,0 +1,138 @@
+.riesgos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.risk-matrix {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2);
+
+  &__axis-y {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 0.8rem;
+    color: var(--mat-sys-on-surface-variant);
+    text-align: center;
+  }
+
+  &__axis-x {
+    grid-column: 2;
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--mat-sys-on-surface-variant);
+    margin-top: var(--space-2);
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    aspect-ratio: 1.4 / 1;
+  }
+
+  &__cell {
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--mat-sys-on-surface);
+
+    &--bajo {
+      background-color: #bbf7d0;
+    }
+
+    &--medio {
+      background-color: #fde68a;
+    }
+
+    &--alto {
+      background-color: #fca5a5;
+    }
+  }
+}
+
+.risk-legend {
+  display: flex;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+  }
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+
+    &--bajo {
+      background-color: #22c55e;
+    }
+
+    &--medio {
+      background-color: #eab308;
+    }
+
+    &--alto {
+      background-color: #ef4444;
+    }
+  }
+}
+
+.risk-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.risk-item {
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  padding-bottom: var(--space-4);
+
+  &:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-1);
+  }
+
+  &__id {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--mat-sys-primary);
+  }
+
+  &__desc {
+    margin: 0 0 var(--space-2);
+    font-size: 0.9rem;
+  }
+
+  &__mitigacion {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    margin: 0 0 var(--space-1);
+    font-size: 0.8rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__owner {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}

@@ -1,0 +1,98 @@
+<div class="reportes">
+  <header class="page-header">
+    <div>
+      <h1 class="page-header__title">Reportes</h1>
+      <p class="page-header__subtitle">ReparaYa · Sprint 2</p>
+    </div>
+  </header>
+
+  <mat-tab-group class="reportes__tabs">
+    <mat-tab label="Ejecutivo">
+      <div class="reportes__tab-content">
+        <div class="kpi-grid">
+          <div class="stat-tile">
+            <span class="stat-tile__icon"><mat-icon>trending_up</mat-icon></span>
+            <div>
+              <p class="stat-tile__value">{{ resumen().avance }}%</p>
+              <p class="stat-tile__label">Avance general</p>
+            </div>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-tile__icon"><mat-icon>favorite</mat-icon></span>
+            <div>
+              <p class="stat-tile__value">{{ resumen().healthScore }}</p>
+              <p class="stat-tile__label">Health score</p>
+            </div>
+          </div>
+          <div class="stat-tile">
+            <span class="stat-tile__icon"><mat-icon>event</mat-icon></span>
+            <div>
+              <p class="stat-tile__value">{{ resumen().diasRestantes }} días</p>
+              <p class="stat-tile__label">Restantes de cronograma</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel reportes__summary">
+          <p class="panel__title">Resumen del sprint</p>
+          <p>{{ resumen().resumenTexto }}</p>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Desviación">
+      <div class="reportes__tab-content">
+        <div class="panel">
+          <p class="panel__title">Planificado vs. Real por sprint</p>
+          <div class="reportes__chart">
+            <canvas
+              baseChart
+              [type]="desviacionChartType"
+              [data]="desviacionChartData()"
+              [options]="desviacionChartOptions"
+            ></canvas>
+          </div>
+          <p class="reportes__desviacion">
+            Desviación acumulada:
+            <strong [class.reportes__desviacion--negativa]="desviacion().desviacionAcumulada < 0">
+              {{ desviacion().desviacionAcumulada }}%
+            </strong>
+            respecto al plan
+          </p>
+        </div>
+      </div>
+    </mat-tab>
+
+    <mat-tab label="Desempeño">
+      <div class="reportes__tab-content">
+        <div class="panel">
+          <p class="panel__title">Desempeño por integrante</p>
+          <table mat-table [dataSource]="desempeno()" class="reportes__table">
+            <ng-container matColumnDef="nombre">
+              <th mat-header-cell *matHeaderCellDef>Integrante</th>
+              <td mat-cell *matCellDef="let d">{{ d.nombre }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="completadas">
+              <th mat-header-cell *matHeaderCellDef>Completadas</th>
+              <td mat-cell *matCellDef="let d">{{ d.completadas }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="pendientes">
+              <th mat-header-cell *matHeaderCellDef>Pendientes</th>
+              <td mat-cell *matCellDef="let d">{{ d.pendientes }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="atrasadas">
+              <th mat-header-cell *matHeaderCellDef>Atrasadas</th>
+              <td mat-cell *matCellDef="let d">{{ d.atrasadas }}</td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="desempenoColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: desempenoColumns"></tr>
+          </table>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

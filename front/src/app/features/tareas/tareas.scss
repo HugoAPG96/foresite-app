@@ -1,0 +1,88 @@
+.tareas {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+
+  &__header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+}
+
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  align-items: start;
+
+  &__column {
+    background-color: var(--mat-sys-surface-container-lowest);
+    border-radius: var(--radius-lg);
+  }
+
+  &__column-title {
+    margin: 0 0 var(--space-3);
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--mat-sys-on-surface-variant);
+    padding: 0 var(--space-1);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    min-height: 80px;
+  }
+}
+
+.task-card {
+  background-color: var(--mat-sys-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-3) var(--space-4);
+  cursor: grab;
+
+  &--done {
+    opacity: 0.7;
+  }
+
+  &--vencida {
+    border: 1px solid #ef4444;
+  }
+
+  &__title {
+    margin: var(--space-2) 0 var(--space-1);
+    font-size: 0.9rem;
+  }
+
+  &__meta {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__vencida {
+    color: #dc2626;
+    font-weight: 600;
+  }
+}
+
+// Feedback visual de Angular CDK mientras se arrastra una card
+.cdk-drag-preview {
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder) {
+  transition: transform 200ms ease;
+}
+
+.cronograma-table {
+  width: 100%;
+}

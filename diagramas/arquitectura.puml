@@ -1,0 +1,60 @@
+@startuml Foresite_Arquitectura
+
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam roundcorner 12
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 13
+skinparam ArrowColor #555555
+skinparam ArrowThickness 1.2
+
+skinparam node {
+  BackgroundColor #F4F6F8
+  BorderColor #444444
+  FontColor #222222
+}
+
+skinparam component {
+  BackgroundColor #EAF2FF
+  BorderColor #3E6CB5
+  FontColor #1B3A66
+}
+
+skinparam database {
+  BackgroundColor #FDEDEA
+  BorderColor #C0392B
+  FontColor #7B241C
+}
+
+skinparam cloud {
+  BackgroundColor #F0F4C3
+  BorderColor #8A8F1F
+  FontColor #4A4E14
+}
+
+title Arquitectura de Foresite
+
+cloud "GitHub\nRepo + GitHub Actions" as github #F0F4C3
+
+node "Vercel" as vercel {
+  component "Angular SPA" as angular
+}
+
+node "Render" as render {
+  component "NestJS API" as api
+  component "Auth\n(JWT + bcrypt)" as auth
+  component "Módulos de dominio\n(Projects, Tasks, Backlog, Risks)" as domain
+
+  api -down-> auth
+  api -down-> domain
+}
+
+database "Neon\nPostgreSQL" as db
+
+github -down-> vercel : deploy (push a main)
+github -down-> render : deploy (push a main)
+
+angular -down-> api : HTTPS + JWT
+domain -down-> db : TypeORM
+
+@enduml

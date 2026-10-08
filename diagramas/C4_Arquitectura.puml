@@ -1,0 +1,68 @@
+' ==========================================================
+' Foresite — Diagrama de arquitectura C4
+' Usa la librería C4-PlantUML (se descarga automáticamente
+' desde GitHub al renderizar, o clónala localmente y ajusta
+' el !include a una ruta relativa si trabajas sin internet).
+' Repositorio: https://github.com/plantuml-stdlib/C4-PlantUML
+' ==========================================================
+
+
+' ---------------------------------------------------------
+' Nivel 1 — Diagrama de Contexto del Sistema
+' ---------------------------------------------------------
+@startuml Foresite_C4_Contexto
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Helvetica
+
+title Foresite — Diagrama de Contexto (C4 Nivel 1)
+
+Person(estudiante, "Integrante del equipo", "Estudiante que planifica y ejecuta el proyecto: acta, RACI, backlog, tareas.")
+Person(docente, "Docente", "Evalúa el avance del proyecto y revisa los reportes generados.")
+
+System(foresite, "Foresite", "Plataforma web de gestión de proyectos de software: RACI, backlog, riesgos, predicción de retraso y reportes automáticos.")
+
+System_Ext(github, "GitHub", "Repositorio del código fuente. Dispara el despliegue automático vía GitHub Actions.")
+
+Rel(estudiante, foresite, "Crea y gestiona proyectos, tareas, riesgos", "HTTPS")
+Rel(docente, foresite, "Consulta reportes y avance", "HTTPS")
+Rel(github, foresite, "Despliega nuevas versiones", "CI/CD")
+
+@enduml
+
+
+' ---------------------------------------------------------
+' Nivel 2 — Diagrama de Contenedores
+' ---------------------------------------------------------
+@startuml Foresite_C4_Contenedores
+
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+skinparam backgroundColor #FEFEFE
+skinparam defaultFontName Helvetica
+
+title Foresite — Diagrama de Contenedores (C4 Nivel 2)
+
+Person(estudiante, "Integrante del equipo", "Estudiante que planifica y ejecuta el proyecto.")
+Person(docente, "Docente", "Evalúa el avance y los reportes del proyecto.")
+
+System_Boundary(foresite, "Foresite") {
+  Container(spa, "Angular SPA", "Angular, TypeScript", "Wizard de onboarding, dashboard, tareas (Kanban/Cronograma), backlog, riesgos y reportes. Desplegado en Vercel.")
+  Container(api, "NestJS API", "Node.js, NestJS", "Expone la API REST (Auth JWT + módulos de dominio: Projects, Tasks, Backlog, Risks). Desplegado en Render.")
+  ContainerDb(db, "PostgreSQL", "Neon", "Almacena usuarios, proyectos, cronograma RACI, backlog, riesgos.")
+}
+
+System_Ext(github, "GitHub Actions", "Pipeline de CI/CD que construye y despliega SPA y API en cada push a main.")
+
+Rel(estudiante, spa, "Usa", "HTTPS")
+Rel(docente, spa, "Usa", "HTTPS")
+Rel(spa, api, "Consume", "HTTPS / JSON + JWT")
+Rel(api, db, "Lee y escribe", "TypeORM / SQL")
+Rel(github, spa, "Despliega", "Vercel")
+Rel(github, api, "Despliega", "Render")
+
+@enduml

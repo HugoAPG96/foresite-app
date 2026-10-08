@@ -1,0 +1,170 @@
+@startuml Foresite_Modelo_Fisico
+
+!define pk(x) <b><color:#b8860b><&key></color> x</b>
+!define fk(x) <color:#7f8c8d><&link></color> x
+
+skinparam linetype ortho
+hide circle
+skinparam class {
+  BackgroundColor #FEFEFE
+  BorderColor #444444
+  ArrowColor #555555
+}
+
+entity "users" as users {
+  pk(id) : UUID
+  --
+  name : VARCHAR(120)
+  email : VARCHAR(160) <<unique>>
+  password_hash : VARCHAR(255)
+  created_at : TIMESTAMP
+}
+
+entity "projects" as projects {
+  pk(id) : UUID
+  --
+  name : VARCHAR(120)
+  objective : TEXT
+  scope : TEXT
+  start_date : DATE
+  end_date : DATE
+  health_score : NUMERIC(5,2)
+  semaforo : VARCHAR(10)
+  created_by : fk(UUID)
+  created_at : TIMESTAMP
+}
+
+entity "project_members" as project_members {
+  pk(id) : UUID
+  --
+  project_id : fk(UUID)
+  user_id : fk(UUID)
+  role : VARCHAR(60)
+}
+
+entity "phases" as phases {
+  pk(id) : UUID
+  --
+  project_id : fk(UUID)
+  name : VARCHAR(120)
+  order_index : INT
+}
+
+entity "sprints" as sprints {
+  pk(id) : UUID
+  --
+  project_id : fk(UUID)
+  number : INT
+  start_date : DATE
+  end_date : DATE
+}
+
+entity "tasks" as tasks {
+  pk(id) : UUID
+  --
+  project_id : fk(UUID)
+  phase_id : fk(UUID)
+  backlog_item_id : fk(UUID) <<nullable>>
+  code : VARCHAR(10)
+  title : VARCHAR(160)
+  responsible_id : fk(UUID)
+  accountable_id : fk(UUID)
+  start_date : DATE
+  end_date : DATE
+  duration_days : INT
+  percent_complete : NUMERIC(5,2)
+  status : VARCHAR(20)
+  created_at : TIMESTAMP
+}
+
+entity "task_consulted" as task_consulted {
+  pk(id) : UUID
+  --
+  task_id : fk(UUID)
+  user_id : fk(UUID)
+}
+
+entity "task_informed" as task_informed {
+  pk(id) : UUID
+  --
+  task_id : fk(UUID)
+  user_id : fk(UUID)
+}
+
+entity "backlog_items" as backlog_items {
+  pk(id) : UUID
+  --
+  project_id : fk(UUID)
+  phase_id : fk(UUID)
+  sprint_id : fk(UUID)
+  type : VARCHAR(10)
+  code : VARCHAR(10)
+  title : VARCHAR(160)
+  description : TEXT
+  acceptance_criteria : TEXT
+  priority : VARCHAR(10)
+  estimation : NUMERIC(5,2)
+  status : VARCHAR(20)
+  start_date : DATE
+  end_date : DATE
+  dependency_id : fk(UUID) <<nullable, self>>
+  created_at : TIMESTAMP
+}
+
+entity "backlog_item_responsables" as backlog_item_responsables {
+  pk(id) : UUID
+  --
+  backlog_item_id : fk(UUID)
+  user_id : fk(UUID)
+}
+
+entity "risks" as risks {
+  pk(id) : UUID
+  --
+  project_id : fk(UUID)
+  description : TEXT
+  probability : VARCHAR(10)
+  impact : VARCHAR(10)
+  severity : VARCHAR(10)
+  mitigation : TEXT
+  owner_id : fk(UUID)
+  linked_task_id : fk(UUID) <<nullable>>
+  linked_backlog_item_id : fk(UUID) <<nullable>>
+  status : VARCHAR(20)
+  created_at : TIMESTAMP
+}
+
+' ---------- Relaciones ----------
+
+users ||--o{ project_members
+projects ||--o{ project_members
+
+projects ||--o{ phases
+projects ||--o{ sprints
+
+projects ||--o{ tasks
+phases ||--o{ tasks
+users ||--o{ tasks : responsible_id
+users ||--o{ tasks : accountable_id
+
+tasks ||--o{ task_consulted
+users ||--o{ task_consulted
+
+tasks ||--o{ task_informed
+users ||--o{ task_informed
+
+projects ||--o{ backlog_items
+phases ||--o{ backlog_items
+sprints ||--o{ backlog_items
+backlog_items ||--o{ tasks : "genera 1:N"
+backlog_items |o--o{ backlog_items : dependency_id
+
+backlog_items ||--o{ backlog_item_responsables
+users ||--o{ backlog_item_responsables
+
+projects ||--o{ risks
+users ||--o{ risks : owner_id
+tasks |o--o{ risks : linked_task_id
+backlog_items |o--o{ risks : linked_backlog_item_id
+
+@enduml

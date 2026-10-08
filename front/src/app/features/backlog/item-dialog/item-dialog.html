@@ -1,0 +1,117 @@
+<h2 mat-dialog-title>Nuevo ítem del backlog</h2>
+
+<mat-dialog-content class="item-dialog">
+  <div class="item-dialog__field">
+    <p class="item-dialog__label">Tipo</p>
+    <mat-chip-listbox [value]="tipo()" (change)="tipo.set($event.value)">
+      @for (t of tipos; track t) {
+        <mat-chip-option [value]="t">{{ t }}</mat-chip-option>
+      }
+    </mat-chip-listbox>
+  </div>
+
+  <mat-form-field appearance="outline" class="item-dialog__full">
+    <mat-label>Historia de usuario</mat-label>
+    <input matInput placeholder="Como ciudadano quiero..." [ngModel]="historiaUsuario()" (ngModelChange)="historiaUsuario.set($event)" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="item-dialog__full">
+    <mat-label>Descripción</mat-label>
+    <textarea matInput rows="2" placeholder="Detalle de lo que incluye este ítem" [ngModel]="descripcion()" (ngModelChange)="descripcion.set($event)"></textarea>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="item-dialog__full">
+    <mat-label>Criterios de aceptación</mat-label>
+    <textarea matInput rows="2" aria-label="Criterios de aceptación" [ngModel]="criterios()" (ngModelChange)="criterios.set($event)"></textarea>
+  </mat-form-field>
+
+  <div class="item-dialog__row">
+    <mat-form-field appearance="outline" class="item-dialog__field-half">
+      <mat-label>Prioridad</mat-label>
+      <mat-select [value]="prioridad()" (selectionChange)="prioridad.set($event.value)">
+        <mat-option value="Alta">Alta</mat-option>
+        <mat-option value="Media">Media</mat-option>
+        <mat-option value="Baja">Baja</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="item-dialog__field-half">
+      <mat-label>Estimación</mat-label>
+      <input matInput type="number" placeholder="Puntos" [ngModel]="estimacion()" (ngModelChange)="estimacion.set($event)" />
+    </mat-form-field>
+  </div>
+
+  <div class="item-dialog__row">
+    <mat-form-field appearance="outline" class="item-dialog__field-half">
+      <mat-label>Sprint</mat-label>
+      <mat-select [value]="sprint()" (selectionChange)="sprint.set($event.value)">
+        @for (s of sprints; track s) {
+          <mat-option [value]="s">{{ s }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="item-dialog__field-half">
+      <mat-label>Fase</mat-label>
+      <mat-select [value]="fase()" (selectionChange)="fase.set($event.value)">
+        @for (f of data.fases; track f) {
+          <mat-option [value]="f">{{ f }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="item-dialog__field">
+    <p class="item-dialog__label">Responsables</p>
+    <div class="item-dialog__responsables">
+      <mat-chip-set>
+        @for (r of responsables(); track r) {
+          <mat-chip (removed)="quitarResponsable(r)">
+            {{ r }}
+            <button type="button" matChipRemove aria-label="Quitar">
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        }
+      </mat-chip-set>
+
+      @if (disponibles.length > 0) {
+        <select
+          class="item-dialog__add-select"
+          aria-label="Agregar responsable"
+          #addSelect
+          (change)="agregarResponsable(addSelect.value); addSelect.value = ''"
+        >
+          <option value="">+ agregar</option>
+          @for (nombre of disponibles; track nombre) {
+            <option [value]="nombre">{{ nombre }}</option>
+          }
+        </select>
+      }
+    </div>
+  </div>
+
+  <div class="item-dialog__row">
+    <mat-form-field appearance="outline" class="item-dialog__field-half">
+      <mat-label>Fecha inicio</mat-label>
+      <input matInput placeholder="dd/mm" [ngModel]="fechaInicio()" (ngModelChange)="fechaInicio.set($event)" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="item-dialog__field-half">
+      <mat-label>Fecha fin</mat-label>
+      <input matInput placeholder="dd/mm" [ngModel]="fechaFin()" (ngModelChange)="fechaFin.set($event)" />
+    </mat-form-field>
+  </div>
+
+  <mat-form-field appearance="outline" class="item-dialog__full">
+    <mat-label>Dependencia (opcional)</mat-label>
+    <mat-select [value]="dependencia()" (selectionChange)="dependencia.set($event.value)">
+      <mat-option value="Ninguna">Ninguna</mat-option>
+    </mat-select>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button type="button" mat-stroked-button (click)="cancelar()">Cancelar</button>
+  <button type="button" mat-flat-button (click)="crear()">Crear ítem</button>
+</mat-dialog-actions>

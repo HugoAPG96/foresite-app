@@ -1,0 +1,66 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+
+  &__prediction-icon {
+    color: var(--mat-sys-primary);
+    vertical-align: middle;
+    margin-right: var(--space-1);
+  }
+
+  &__prediction-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--mat-sys-primary);
+  }
+
+  &__prediction-text {
+    margin: var(--space-1) 0 0;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__chart {
+    position: relative;
+    height: 220px;
+  }
+}
+
+.carga-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  &__name {
+    width: 70px;
+    font-size: 0.875rem;
+  }
+
+  &__track {
+    flex: 1;
+    height: 8px;
+    border-radius: 999px;
+    background-color: var(--mat-sys-surface-container-high);
+    overflow: hidden;
+  }
+
+  &__fill {
+    height: 100%;
+    background-color: var(--mat-sys-primary);
+    border-radius: 999px;
+  }
+
+  &__value {
+    width: 24px;
+    text-align: right;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+}
