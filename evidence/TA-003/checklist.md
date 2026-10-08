@@ -41,7 +41,7 @@ específico de TA-003.
 
 | ID | Criterio transversal | Validación | Evidencia | Resultado |
 | --- | --- | --- | --- | --- |
-| CI | GitHub Actions ejecuta TA-001 + TA-002 mock + TA-003 (mock), no `tests-prod/`, y no escribe en Neon | workflow `E2E Tests` + run remoto | `TA-003-CI-github-actions.png` + run URL | PENDIENTE |
+| CI | GitHub Actions ejecuta TA-001 + TA-002 mock + TA-003 (mock), no `tests-prod/`, y no escribe en Neon | workflow `E2E Tests` run #14 (push `541a2f3`) → `success` | `TA-003-CI-github-actions.png` + run URL | PASS |
 
 ## Resumen
 
@@ -51,7 +51,8 @@ PASS: 7
 NO CUBIERTO: 0
 BLOQUEADO: 0
 
-CI/CD (transversal): PENDIENTE (verificación remota tras el push)
+CI/CD (transversal): PASS
+https://github.com/HugoAPG96/foresite-app/actions/runs/37729747199
 ```
 
 ## Alcance no incluido (no forma parte de los criterios reconstruidos)

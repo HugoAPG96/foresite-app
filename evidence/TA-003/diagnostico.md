@@ -63,6 +63,14 @@ npx playwright test tests/auth.spec.ts --workers=1     -> 5 passed (TA-001 intac
 
 Reporte: `evidence/TA-003/playwright-report/index.html` · Traces: `evidence/TA-003/traces/`.
 
+CI/CD transversal (GitHub Actions):
+
+```text
+Workflow E2E Tests · Run #14 (commit 541a2f3) · conclusion success
+https://github.com/HugoAPG96/foresite-app/actions/runs/37729747199
+Evidencia: TA-003-CI-github-actions.png
+```
+
 ## Limitaciones
 
 - **Validación en modo mock/controlado:** TA-003 se validó con `MOCK_MODE=true`

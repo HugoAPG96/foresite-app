@@ -9,9 +9,7 @@ NO CUBIERTO: 0
 BLOQUEADO: 0
 ```
 
-Estado: **TA-003 concluida funcionalmente** (7/7 criterios con prueba y evidencia).
-El cierre formal queda pendiente de la verificación del workflow de GitHub Actions
-(criterio transversal CI).
+Estado: **TA-003 CONCLUIDA** (7/7 criterios con prueba y evidencia; CI transversal verificado).
 
 > No existe una matriz oficial de criterios de TA-003 en el repositorio; los
 > criterios se reconstruyeron del alcance implementado y se documentan en
@@ -48,11 +46,17 @@ configuración por defecto (`testDir: ./tests`) y `MOCK_MODE=true`. Ahora incluy
 `kanban.spec.ts` (TA-003), además de TA-001 y el mock de TA-002.
 
 - **No** ejecuta `e2e/tests-prod/` → no escribe datos reales en Neon.
-- Verificación remota: **pendiente** (se cierra tras el push; ver
-  `TA-003-CI-github-actions.png` y el run en `checklist.md`).
+- Verificación remota (GitHub Actions) — run real:
+
+```text
+Workflow: E2E Tests
+Run:      #14  (event=push, branch=main, commit=541a2f3)
+URL:      https://github.com/HugoAPG96/foresite-app/actions/runs/37729747199
+Estado:   success (1m7s; job `e2e` OK, todos los pasos OK)
+Evidencia: TA-003-CI-github-actions.png
+```
 
 ## Conclusión
 
-**TA-003 concluida funcionalmente**: 7/7 criterios con prueba E2E y evidencia
-visual; regresión de TA-001/TA-002 verificada. Cierre formal pendiente del run de
-GitHub Actions (CI transversal).
+**TA-003 CONCLUIDA**: 7/7 criterios con prueba E2E y evidencia visual; regresión
+de TA-001/TA-002 verificada; CI/CD transversal en GitHub Actions (`success`).
