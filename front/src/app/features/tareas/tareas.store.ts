@@ -165,6 +165,7 @@ export class TareasStore {
     if (origen === destino) {
       moveItemInArray(arrayOrigen, indicePrevio, indiceActual);
       columnaOrigen.set(arrayOrigen);
+      this.persistirMovimientoMock();
       return;
     }
 
@@ -175,7 +176,10 @@ export class TareasStore {
     columnaOrigen.set(arrayOrigen);
     columnaDestino.set(arrayDestino);
 
-    if (MOCK_MODE) return;
+    if (MOCK_MODE) {
+      this.persistirMovimientoMock();
+      return;
+    }
 
     firstValueFrom(
       this.http.patch(`${API_BASE_URL}/projects/${projectId}/tasks/${tarea.id}`, {
@@ -187,6 +191,15 @@ export class TareasStore {
       columnaOrigen.set([...columnaOrigen(), tarea]);
       this._error.set('No se pudo mover la tarea.');
     });
+  }
+
+  // En modo simulado no hay backend: se refleja el movimiento en las señales
+  // persistidas para que sobreviva a un reload (antes se perdía).
+  private persistirMovimientoMock() {
+    if (!MOCK_MODE) return;
+    this._pendienteMock.set(this._pendiente());
+    this._progresoMock.set(this._progreso());
+    this._completadaMock.set(this._completada());
   }
 
   private columnaDe(id: string): ColumnaTarea | null {
